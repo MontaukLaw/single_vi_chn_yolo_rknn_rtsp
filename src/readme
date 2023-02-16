@@ -4,3 +4,5 @@ Usage:
 2. run ./single_vi_yolo_rknn_rtsp res/yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn 0.5
 
 0.5 mean min confidence
+
+by marc

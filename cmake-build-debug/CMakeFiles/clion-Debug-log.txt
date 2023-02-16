@@ -1,0 +1,5 @@
+/home/marc/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/marc/clion/bin/ninja/linux/x64/ninja -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -G Ninja -S /home/marc/ai/single_vi_yolo_rknn_rtsp -B /home/marc/ai/single_vi_yolo_rknn_rtsp/cmake-build-debug
+x11: /usr/include
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/marc/ai/single_vi_yolo_rknn_rtsp/cmake-build-debug

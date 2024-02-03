@@ -1,0 +1,3 @@
+/home/marc/single_vi_chn_yolo_rknn_rtsp/build/CMakeFiles/single_vi_yolo_rknn_rtsp.dir
+/home/marc/single_vi_chn_yolo_rknn_rtsp/build/CMakeFiles/edit_cache.dir
+/home/marc/single_vi_chn_yolo_rknn_rtsp/build/CMakeFiles/rebuild_cache.dir

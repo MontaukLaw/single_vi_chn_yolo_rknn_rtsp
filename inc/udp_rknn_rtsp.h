@@ -1,6 +1,13 @@
 #ifndef __UDP_RKNN_RTSP_H_
 #define __UDP_RKNN_RTSP_H_
 
+#include "opencv2/opencv.hpp"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <getopt.h>
 #include <math.h>
 #include <pthread.h>
@@ -23,7 +30,9 @@
 #include "rkmedia_api.h"
 #include "postprocess.h"
 #include "sample_common.h"
-#include "opencv2/opencv.hpp"
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif

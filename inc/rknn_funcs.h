@@ -1,18 +1,14 @@
 #ifndef __RKNN_FUNCS_H__
 #define __RKNN_FUNCS_H__
 
-#include "postprocess.h"
 
-typedef struct node {
-    long timeval;
-    detect_result_group_t detect_result_group;
-    struct node *next;
-} Node;
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include "user_struct.h"
+// #include "postprocess.h"
 
-typedef struct my_stack {
-    int size;
-    Node *top;
-} rknn_list;
 
 void rknn_list_push(rknn_list *s, long timeval, detect_result_group_t detect_result_group);
 
@@ -29,5 +25,9 @@ void destory_rknn_list(rknn_list **s);
 // int init_model(const char* modelPath);
 
 void rknn_list_pop(rknn_list *s, long *timeval, detect_result_group_t *detect_result_group);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

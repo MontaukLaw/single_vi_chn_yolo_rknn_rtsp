@@ -1,3 +1,7 @@
+update 20240207
+1. 直接 ./single_vi_yolo_rknn_rtsp 不用加参数, 模型文件为yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn
+
+
 Usage:
 1. put coco_80_labels_list.txt and model file with app.
 
@@ -6,3 +10,4 @@ Usage:
 0.5 mean min confidence
 
 by marc
+

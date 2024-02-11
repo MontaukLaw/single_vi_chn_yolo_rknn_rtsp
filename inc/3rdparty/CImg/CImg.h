@@ -375,7 +375,7 @@ enum {FALSE_WIN = 0};
 #if cimg_OS==0
 #define cimg_display 0
 #elif cimg_OS==1
-#define cimg_display 1
+#define cimg_display 0
 #elif cimg_OS==2
 #define cimg_display 2
 #endif

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(double_vi_test)
+project(single_vi_yolo_rknn_rtsp)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -13,6 +13,9 @@ set(SYS_LIB_INC ${TOOLCHAIN_DIR}/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03
 
 set(X11_LIB_INC /usr/include)
 message("x11: ${X11_LIB_INC}")
+
+set(MP4_LIBS mp4v2)
+link_directories(include lib)
 
 add_definitions(-g -O0 -ggdb -gdwarf -funwind-tables -rdynamic)
 add_definitions(-Wno-write-strings -Wno-return-type)
@@ -49,13 +52,20 @@ include_directories(${X11_LIB_INC})
 
 add_definitions(-DRKAIQ)
 
-add_executable(single_vi_yolo_rknn_rtsp src/main.cpp
-        src/rga_trans.c
+add_executable(single_vi_yolo_rknn_rtsp 
+        src/main.cpp
         src/comm.cc
-        src/drm_func.c
         src/rknn_funcs.cpp
         src/rknn_model.cc
         src/sample_common_isp.c
-        src/yolo.cc)
+        src/yolo.cc
+        src/monitor.cc
+        src/param.cc
+        src/mp4_process.cc
+        src/utils.cc
+        src/h264_venc.cc
+        src/vi_rga_venc.cpp
+        src/rknn_process.cc
+        src/img_utils.cc)
 
-target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS})
+target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga)

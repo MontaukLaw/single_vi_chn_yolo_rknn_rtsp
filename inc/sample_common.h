@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "rkmedia_common.h"
-
+#include "rk_aiq_comm.h"
 
 #include <rk_aiq_user_api_imgproc.h>
 #include <rk_aiq_user_api_sysctl.h>
@@ -35,21 +35,21 @@ typedef enum {
 */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-RK_S32 SAMPLE_COMM_ISP_Init(RK_S32 CamId, rk_aiq_working_mode_t WDRMode,
-                            RK_BOOL MultiCam, const char *iq_file_dir);
+    RK_S32 SAMPLE_COMM_ISP_Init(RK_S32 CamId, rk_aiq_working_mode_t WDRMode,
+                                RK_BOOL MultiCam, const char *iq_file_dir);
 
-RK_S32 SAMPLE_COMM_ISP_Stop(RK_S32 CamId);
+    RK_S32 SAMPLE_COMM_ISP_Stop(RK_S32 CamId);
 
-RK_S32 SAMPLE_COMM_ISP_Run(RK_S32 CamId); // isp stop before vi streamoff
+    RK_S32 SAMPLE_COMM_ISP_Run(RK_S32 CamId); // isp stop before vi streamoff
 
-RK_S32 SAMPLE_COMM_ISP_SetFrameRate(RK_S32 CamId, RK_U32 uFps);
+    RK_S32 SAMPLE_COMM_ISP_SetFrameRate(RK_S32 CamId, RK_U32 uFps);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

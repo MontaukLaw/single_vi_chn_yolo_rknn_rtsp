@@ -17,7 +17,7 @@
 #define UPALIGNTO(value, align) ((value + align - 1) & (~(align - 1)))
 #define UPALIGNTO16(value) UPALIGNTO(value, 16)
 #define YOLO_INPUT_SIZE (MODEL_INPUT_SIZE * MODEL_INPUT_SIZE * 3)
-#define FPS 30
+#define FPS 25
 
 #define NMS_THRESHOLD 0.45
 #define RTSP_INPUT_VI_WIDTH 1920
@@ -41,7 +41,7 @@
 #define IS_NOT_HIDEN_FILE 20
 #define MP4_FILE_NAME_LEN 18
 #define VIDEO_TRACK_TIME_SCALE 90000
-#define VIDEO_FPS 30
+#define VIDEO_FPS     FPS // 30
 #define MIPI_2_DEV_ID 1
 
 #define SPS_FRAME_LEN 26

@@ -38,6 +38,12 @@ std::map<std::string, std::string> readConfig(const std::string &filename)
     gParams.water_mark_text=config["water_mark_text"];
     gParams.chinese_font_path=config["chinese_font_path"];
     gParams.mp4_folder=config["mp4_folder"];
+    gParams.water_mark_font_size = std::stoi(config["water_mark_font_size"]);
+    gParams.jpeg_folder=config["jpeg_folder"];
+    gParams.jpeg_quality = std::stoi(config["jpeg_quality"]);
+    gParams.jpeg_width = std::stoi(config["jpeg_width"]);
+    gParams.jpeg_height = std::stoi(config["jpeg_height"]);
+    gParams.jpeg_interval = std::stoi(config["jpeg_interval"]);
 
     printf("Save MP4: %d\n", gParams.save_mp4);
     printf("MP4 Length: %d\n", gParams.mp4_length_sec);
@@ -49,6 +55,13 @@ std::map<std::string, std::string> readConfig(const std::string &filename)
     printf("Water Mark Text: %s\n", gParams.water_mark_text.c_str());
     printf("Chinese Font Path: %s\n", gParams.chinese_font_path.c_str());
     printf("MP4 Folder: %s\n", gParams.mp4_folder.c_str());
+    printf("Water Mark Font Size: %d\n", gParams.water_mark_font_size);
+    printf("JPEG Folder: %s\n", gParams.jpeg_folder.c_str());
+    printf("JPEG Quality: %d\n", gParams.jpeg_quality);
+    printf("JPEG Width: %d\n", gParams.jpeg_width);
+    printf("JPEG Height: %d\n", gParams.jpeg_height);
+    printf("JPEG Interval: %d\n", gParams.jpeg_interval);
+    
 
     return config;
 }

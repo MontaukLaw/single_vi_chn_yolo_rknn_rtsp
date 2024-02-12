@@ -23,6 +23,13 @@ extern "C"
         std::string chinese_font_path;
         std::string water_mark_text;
         std::string mp4_folder;
+        int water_mark_font_size;
+        std::string jpeg_folder;
+        int jpeg_quality;
+        int jpeg_width;
+        int jpeg_height;
+        int jpeg_interval;
+        
     } g_params;
 
     std::map<std::string, std::string> readConfig(const std::string &filename);

@@ -228,6 +228,68 @@ void monitor_rga_packet_cb(MEDIA_BUFFER mb)
 }
 
 // 6220800
+void *observer_thread_good(void *arg)
+{
+    MEDIA_BUFFER buffer = NULL;
+    int fileSaveCounter = 0;
+    int frameCounter = 0;
+    long int lastTime = 0;
+    long int curTime = get_time_now_sec();
+    int boxInfoListNumber = 0;
+    int boxDisplayCounterDown = 0;
+
+    long int startTimeMs = 0;
+    long int endTimeMs = 0;
+
+    struct timeval tv;
+
+    while (g_flag_run)
+    {
+        buffer = RK_MPI_SYS_GetMediaBuffer(RK_ID_RGA, MONITOR_RGA_CHN, -1);
+        if (!buffer)
+        {
+            usleep(1000);
+            continue;
+        }
+
+        frameCounter++;
+        curTime = get_time_now_sec();
+        // printf("cur sec:%ld\n", curTime);
+        // printf("curTime:%lld lastTime:%lld\n", curTime, lastTime);
+        if ((curTime != lastTime))
+        {
+            printf("monitor fps:%d\n", frameCounter);
+            frameCounter = 0;
+            lastTime = curTime;
+        }
+        RK_MPI_SYS_SendMediaBuffer(RK_ID_VENC, MONITOR_VENC_CHN, buffer);
+        RK_MPI_MB_ReleaseBuffer(buffer);
+    }
+
+    return nullptr;
+}
+
+static void save_jpeg(Mat orig_img)
+{
+    static int saveJpegCounter = 0;
+    saveJpegCounter++;
+    static int jpegNameCounter = 0;
+    if (saveJpegCounter % gParams.jpeg_interval == 0)
+    {
+        jpegNameCounter++;
+        Mat jpegImg;
+        std::vector<int> param(2);
+        param[0] = cv::IMWRITE_JPEG_QUALITY;
+        param[1] = gParams.jpeg_quality; // default(95) 0-100
+        cvtColor(orig_img, jpegImg, COLOR_BGR2RGB);
+        resize(jpegImg, jpegImg, Size(gParams.jpeg_width, gParams.jpeg_height));
+        char fileName[100];
+        sprintf(fileName, "%s%d.jpg", gParams.jpeg_folder.c_str(), jpegNameCounter);
+        imwrite(fileName, jpegImg, param);
+    }
+}
+
+// 6220800
 void *observer_thread(void *arg)
 {
     MEDIA_BUFFER buffer = NULL;
@@ -340,6 +402,8 @@ void *observer_thread(void *arg)
             frameCounter = 0;
             lastTime = curTime;
         }
+
+        save_jpeg(orig_img);
 
         RK_MPI_SYS_SendMediaBuffer(RK_ID_VENC, MONITOR_VENC_CHN, buffer);
         RK_MPI_MB_ReleaseBuffer(buffer);

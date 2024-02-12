@@ -54,8 +54,7 @@ void create_mp4_file(void)
     mp4_file_inited = 1;
 }
 
-// 创建mp4文件
-void reset_new_mp4_file(void)
+void close_mp4_file_saving(void)
 {
     recordingVideo = 0;
     printf("Close mp4 file\n");
@@ -63,6 +62,13 @@ void reset_new_mp4_file(void)
     {
         MP4Close(hMP4File, 0);
     }
+}
+
+// 创建mp4文件
+void reset_new_mp4_file(void)
+{
+
+    close_mp4_file_saving();
 
     // hMP4File = NULL;
     create_mp4_file();
@@ -99,6 +105,11 @@ void init_video_audio_track(uint8_t *pData)
 RK_S32 record_mp4(MEDIA_BUFFER mb)
 {
 
+    // 如果不保存mp4, 直接退出
+    if (gParams.save_mp4 == false)
+    {
+        return 0;
+    }
     // printf("Record mp4\n");
     static int passFrameCounter = 0;
     if (passFrameCounter < PASS_FRAME_NUM)
@@ -115,7 +126,7 @@ RK_S32 record_mp4(MEDIA_BUFFER mb)
     static bool ifFoundSpsPps = false;
     static bool ifFoundSEI = false;
     static RK_S32 packet_cnt = 0;
-    static int64_t elapse_us = 0;
+    // static int64_t elapse_us = 0;
 
     int j = 0;
     int len = 0;
@@ -125,15 +136,32 @@ RK_S32 record_mp4(MEDIA_BUFFER mb)
 
     RK_S32 frameType = RK_MPI_MB_GetFlag(mb);
 
-    printf("Get packet type: %d, size %zu\n", frameType, RK_MPI_MB_GetSize(mb));
+    // printf("Get packet type: %d, size %zu\n", frameType, RK_MPI_MB_GetSize(mb));
 
-    elapse_us = get_current_time_us();
+    // elapse_us = get_current_time_us();
 
     // printf("1 frame create time: %.3fms\n", elapse_us / 1000.0);
     // len = stStream->pstPack[j].u32Len - stStream->pstPack[j].u32Offset;
     // pData = (stStream->pstPack[j].pu8Addr + stStream->pstPack[j].u32Offset);
     len = RK_MPI_MB_GetSize(mb);
     pData = (uint8_t *)RK_MPI_MB_GetPtr(mb);
+
+    if (VENC_NALU_IDRSLICE == frameType)
+    {
+        printf("VENC_NALU_IDRSLICE len:%d\n", len);
+        if (pData[0] == 0 && pData[1] == 0 && pData[2] == 0 && pData[3] == 0x01 && pData[4] == 0x67)
+        {
+            printf("SPS\n");
+        }
+        else
+        {
+            printf("IDR frame 0x%02x 0x%02x\n", pData[3], pData[4]);
+        }
+    }
+    else if (frameType == VENC_NALU_PSLICE)
+    {
+        printf("VENC_NALU_PSLICE len:%d\n", len);
+    }
 
     if (VENC_NALU_IDRSLICE == frameType)
     {

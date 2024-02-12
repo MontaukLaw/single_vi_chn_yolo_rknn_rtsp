@@ -91,7 +91,7 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
 
     // pthread_mutex_lock(&mp4_mutex);
     // 录制mp4
-    // record_mp4(mb);
+    record_mp4(mb);
     // pthread_mutex_unlock(&mp4_mutex);
 
     RK_MPI_MB_ReleaseBuffer(mb);

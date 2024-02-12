@@ -1,2 +1,26 @@
+0212
+1. MP4保存的问题解决了
+2. 编码为mp4也ok了
+
 1. mp4文件仍然有问题
 2. 接下来准备压缩为jpeg
+
+
+save_mp4=true       # 是否保存mp4文件
+mp4_length=600      # mp4文件长度, 秒为单位
+draw_distance=true  # 是否绘制距离虚线
+point_x=100         # 距离虚线起始点x
+point_y=200         # 距离虚线起始点y
+water_mark_start_x=100   # 水印起始点x
+water_mark_start_y=100   # 水印起始点y
+water_mark_text=测试文本  # 水印文本
+water_mark_font_size=20  # 水印字体大小
+chinese_font_path=FangZhengHeiTiJianTi.ttf  # 中文字体路径
+mp4_folder=/demo/0207/   # mp4文件保存路径
+jpeg_folder=/demo/0207/  # jpeg文件保存路径
+jpeg_width=1920          # jpeg文件宽度
+jpeg_height=1080         # jpeg文件高度
+jpeg_interval=25         # jpeg文件保存间隔
+jpeg_quality=50          # jpeg文件质量(0-100)
+
+

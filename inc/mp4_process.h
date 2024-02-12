@@ -15,6 +15,7 @@ extern "C"
 #endif
 
     RK_S32 record_mp4(MEDIA_BUFFER mb);
+    void close_mp4_file_saving(void);
 
 #ifdef __cplusplus
 }

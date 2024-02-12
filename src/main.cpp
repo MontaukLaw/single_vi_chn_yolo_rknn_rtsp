@@ -59,6 +59,8 @@ static void sig_proc(int signo)
 static void destroy_all(void)
 {
 
+    close_mp4_file_saving();
+
     if (observer_thread_id)
     {
         pthread_join(observer_thread_id, nullptr);
@@ -100,7 +102,6 @@ static int create_venc_chn(RK_U32 fps, RK_U32 u32Width, RK_U32 u32Height, RK_U32
 
     int ret = 0;
     venc_chn_attr.stVencAttr.enType = RK_CODEC_TYPE_H264;
-
     venc_chn_attr.stRcAttr.enRcMode = VENC_RC_MODE_H264CBR;
     venc_chn_attr.stRcAttr.stH264Cbr.u32Gop = fps;
     venc_chn_attr.stRcAttr.stH264Cbr.u32BitRate = u32Width * u32Height * 3;

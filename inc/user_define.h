@@ -51,5 +51,6 @@
 #define PERF_WITH_POST 1
 #define COCO_IMG_NUMBER 5000
 #define DUMP_INPUT 0
+#define WATER_MARK_TEXT_LINES 3
 
 #endif

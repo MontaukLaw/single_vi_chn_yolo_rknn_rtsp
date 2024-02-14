@@ -148,23 +148,6 @@ RK_S32 record_mp4(MEDIA_BUFFER mb)
 
     if (VENC_NALU_IDRSLICE == frameType)
     {
-        printf("VENC_NALU_IDRSLICE len:%d\n", len);
-        if (pData[0] == 0 && pData[1] == 0 && pData[2] == 0 && pData[3] == 0x01 && pData[4] == 0x67)
-        {
-            printf("SPS\n");
-        }
-        else
-        {
-            printf("IDR frame 0x%02x 0x%02x\n", pData[3], pData[4]);
-        }
-    }
-    else if (frameType == VENC_NALU_PSLICE)
-    {
-        printf("VENC_NALU_PSLICE len:%d\n", len);
-    }
-
-    if (VENC_NALU_IDRSLICE == frameType)
-    {
         // printf("IDR frame 0x%02x 0x%02x\n", pData[3], pData[4]);
         if (pData[0] == 0 && pData[1] == 0 && pData[2] == 0 && pData[3] == 0x01 && pData[4] == 0x67)
         {

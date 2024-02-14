@@ -113,15 +113,53 @@ int draw_connect_line_to_point(Mat img, Point startPoint, box_info_t boxInfo)
 // 加水印
 void draw_water_mark(Mat img)
 {
+
     cv::Ptr<cv::freetype::FreeType2> ft2;
     ft2 = cv::freetype::createFreeType2();
     ft2->loadFontData(gParams.chinese_font_path, 0);
-    // 设置文本属性
-    std::string waterMarkText = gParams.water_mark_text;                       // 需要显示的中文文本
-    int fontHeight = 30;                                                       // 字体高度
-    cv::Point textOrg(gParams.water_mark_start_x, gParams.water_mark_start_x); // 文本在图像中的位置
-    cv::Scalar textColor(0, 0, 255);                                           // 文本颜色（红色）
-    ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
+    int fontHeight = gParams.water_mark_font_size; // 字体高度
+    cv::Scalar textColor(0, 0, 0);                 // 文本颜色（红色）
+
+    int i = 0;
+    for (i = 0; i < 3; i++)
+    {
+        // 设置文本属性
+        std::string waterMarkText = gParams.wn_water_mark[i].text; // 需要显示的中文文本
+        cv::Point textOrg(gParams.wn_water_mark[i].start_x,
+                          gParams.wn_water_mark[i].start_y); // 文本在图像中的位置
+
+        ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+        // 设置文本属性
+        std::string waterMarkText = gParams.ws_water_mark[i].text; // 需要显示的中文文本
+        cv::Point textOrg(gParams.ws_water_mark[i].start_x,
+                          gParams.ws_water_mark[i].start_y); // 文本在图像中的位置
+
+        ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+        // 设置文本属性
+        std::string waterMarkText = gParams.en_water_mark[i].text; // 需要显示的中文文本
+        cv::Point textOrg(gParams.en_water_mark[i].start_x,
+                          gParams.en_water_mark[i].start_y); // 文本在图像中的位置
+
+        ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+        // 设置文本属性
+        std::string waterMarkText = gParams.es_water_mark[i].text; // 需要显示的中文文本
+        cv::Point textOrg(gParams.es_water_mark[i].start_x,
+                          gParams.es_water_mark[i].start_y); // 文本在图像中的位置
+
+        ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
+    }
 }
 
 // 监控回调函数

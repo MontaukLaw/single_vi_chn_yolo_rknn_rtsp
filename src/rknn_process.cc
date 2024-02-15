@@ -2,6 +2,7 @@
 
 extern int g_flag_run;
 extern rknn_list *rknn_list_;
+extern g_params gParams;
 
 // int detectResultNumber = 0;
 detect_result_group_t detect_result_group;
@@ -33,6 +34,8 @@ void *rknn_yolo_thread(void *args)
     int printCounter = 0;
 
     MEDIA_BUFFER buffer = NULL;
+
+    int noBoxCounter = 0;
 
     // get data from vi
     while (g_flag_run)
@@ -72,10 +75,19 @@ void *rknn_yolo_thread(void *args)
         if (detect_result_group_.detect_count > 0)
         {
             memcpy(&detect_result_group, &detect_result_group_, sizeof(detect_result_group_t));
+            noBoxCounter = 0;
+        }
+        else
+        {
+            noBoxCounter++;
+            if (noBoxCounter >= gParams.clean_old_box_frames)
+            {
+                memset(&detect_result_group, 0, sizeof(detect_result_group_t));
+                noBoxCounter = 0;
+            }
         }
 
         // put detect result to list
-
         // detectResultNumber = detect_result_group.detect_count;
         // if (detect_result_group.detect_count > 0)
         // {

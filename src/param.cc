@@ -42,6 +42,7 @@ std::map<std::string, std::string> readConfig(const std::string &filename)
     gParams.jpeg_height = std::stoi(config["jpeg_height"]);
     gParams.jpeg_interval = std::stoi(config["jpeg_interval"]);
     gParams.water_mark_y_gap = std::stoi(config["water_mark_y_gap"]);
+    gParams.clean_old_box_frames = std::stoi(config["clean_old_box_frames"]);
 
     int i = 0;
     for (i = 0; i < WATER_MARK_TEXT_LINES; i++)
@@ -93,6 +94,7 @@ std::map<std::string, std::string> readConfig(const std::string &filename)
     printf("JPEG Width: %d\n", gParams.jpeg_width);
     printf("JPEG Height: %d\n", gParams.jpeg_height);
     printf("JPEG Interval: %d\n", gParams.jpeg_interval);
+    printf("clean_old_box_frames: %d\n", gParams.clean_old_box_frames);
 
     for (i = 0; i < 3; i++)
     {

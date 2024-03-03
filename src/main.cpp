@@ -15,6 +15,8 @@ rknn_list *rknn_list_;
 rtsp_demo_handle g_rtsplive = NULL;
 rtsp_session_handle g_rtsp_session_c0;
 
+extern g_params gParams;
+
 long int get_time_now_us(void)
 {
     struct timeval tv;
@@ -46,8 +48,27 @@ static void save_file(char *fileName, void *data, int dataLen)
 static void init_isp(void)
 {
     SAMPLE_COMM_ISP_Init(s32CamId, hdr_mode, bMultictx, pIqfilesPath);
+
+    if (gParams.fec_enable)
+    {
+        // 打开FEC
+        SAMPLE_COMM_ISP_SetFecEn(s32CamId, RK_TRUE);
+    }
+
     SAMPLE_COMM_ISP_Run(s32CamId);
     SAMPLE_COMM_ISP_SetFrameRate(s32CamId, FPS);
+
+    if (gParams.defog_level > 0)
+    {
+        // 打开除雾 1表示打开手动, 2是自动模式
+        SAMPLE_COMM_ISP_SET_DefogEnable(s32CamId, 1);
+        // 1表示手动模式, 255是最大值
+        SAMPLE_COMM_ISP_SET_DefogStrength(s32CamId, 1, gParams.defog_level);
+    }
+    else
+    {
+        SAMPLE_COMM_ISP_SET_DefogEnable(s32CamId, RK_FALSE);
+    }
 }
 
 static void sig_proc(int signo)

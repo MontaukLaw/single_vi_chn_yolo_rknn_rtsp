@@ -1,3 +1,9 @@
+0303
+1. 除雾等级是0-255, 实际对应是1-10, 1是最弱, 10是最强, 0是没有, 在config.ini中进行配置defog_level
+2. 同样配置config.ini可以设置鱼眼畸变校正开关: fec_enable=true
+3. 修改watermatk.psd, 可以修改水印的文字跟字体样式等, 另存为png, 并传到板端, 就可以.
+
+
 0217
 1. 修改了旧框被刷新的逻辑, 具体刷新的时间参考config.ini, 记得把新的config.ini复制到板子上
 clean_old_box_frames=25
@@ -45,7 +51,7 @@ water_mark_ws_line0_text=测试文本7
 water_mark_ws_line1_text=测试文本8
 water_mark_ws_line2_text=测试文本9
 water_mark_es_start_x=1600
-water_mark_es_start_y=900
+water_mark_es_start_y=800
 water_mark_es_line0_text=测试文本10
 water_mark_es_line1_text=测试文本11
 water_mark_es_line2_text=测试文本12

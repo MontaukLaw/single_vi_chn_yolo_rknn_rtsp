@@ -73,6 +73,9 @@
         "rga.h": "c",
         "rkmedia_api.h": "c",
         "yolo.h": "c",
-        "*.origin": "cpp"
+        "*.origin": "cpp",
+        "hash_map": "cpp",
+        "rope": "cpp",
+        "slist": "cpp"
     }
 }

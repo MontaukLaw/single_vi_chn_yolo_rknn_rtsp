@@ -110,6 +110,34 @@ int draw_connect_line_to_point(Mat img, Point startPoint, box_info_t boxInfo)
     return minDistance;
 }
 
+void overlayImage(Mat *src, Mat *overlay, const Point &location)
+{
+    for (int y = max(location.y, 0); y < src->rows; ++y)
+    {
+        int fY = y - location.y;
+
+        if (fY >= overlay->rows)
+            break;
+
+        for (int x = max(location.x, 0); x < src->cols; ++x)
+        {
+            int fX = x - location.x;
+
+            if (fX >= overlay->cols)
+                break;
+
+            double opacity = ((double)overlay->data[fY * overlay->step + fX * overlay->channels() + 3]) / 255;
+
+            for (int c = 0; opacity > 0 && c < src->channels(); ++c)
+            {
+                unsigned char overlayPx = overlay->data[fY * overlay->step + fX * overlay->channels() + c];
+                unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
+                src->data[y * src->step + src->channels() * x + c] = srcPx * (1. - opacity) + overlayPx * opacity;
+            }
+        }
+    }
+}
+
 // 加水印
 void draw_water_mark(Mat img)
 {
@@ -151,6 +179,85 @@ void draw_water_mark(Mat img)
         ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
     }
 
+    // 步骤1: 加载PNG图片，保留透明通道
+    cv::Mat waterMarkImg = cv::imread("watermark.png", cv::IMREAD_UNCHANGED);
+    if (waterMarkImg.empty())
+    {
+        printf("watermark.png not found\n");
+        return;
+    }
+
+    cv::Mat waterMarkImgRGB;
+    cvtColor(waterMarkImg, waterMarkImgRGB, cv::COLOR_BGRA2BGR);
+    int waterMarkImgStartX = gParams.es_water_mark[0].start_x;
+    int waterMarkImgStartY = gParams.es_water_mark[0].start_y;
+
+    // printf("waterMarkImgStartX:%d waterMarkImgStartY:%d\n", waterMarkImgStartX, waterMarkImgStartY);
+    // printf("waterMarkImg.cols:%d waterMarkImg.rows:%d\n", waterMarkImg.cols, waterMarkImg.rows);
+
+    // cv::Mat overlay = cv::imread("watermark.png", cv::IMREAD_UNCHANGED);
+    cv::Mat roi = img(cv::Rect(waterMarkImgStartX, waterMarkImgStartY, waterMarkImgRGB.cols, waterMarkImgRGB.rows));
+    // cv::addWeighted(roi, 0, waterMarkImgRGB, 1, 0, roi);
+
+    Mat rgba[4];
+    split(waterMarkImg, rgba);
+
+    overlayImage(&roi, &waterMarkImg, Point());
+
+    // Mat grayPng = imread("watermark.png", 0);
+    // threshold(grayPng, grayPng, 180, 250, CV_THRESH_BINARY);
+    // Mat png = imread("watermark.png");
+    // Mat mask = 255 - grayPng;
+    // Mat imROI;
+    // imROI = img(cv::Rect(waterMarkImgStartX, waterMarkImgStartY, waterMarkImg.cols, waterMarkImg.rows));
+    // png.copyTo(imROI, mask);
+
+    // 创建一个与目标区域相同大小的ROI(Region of Interest)
+    // cv::Mat roi(img, cv::Rect(waterMarkImgStartX, waterMarkImgStartY, waterMarkImg.cols, waterMarkImg.rows));
+    //  addWeighted( src1, alpha, src2, beta, 0.0, dst);
+    // double alpha = 0;
+    // double beta;
+    // double input;
+    // beta = (1.0 - alpha);
+    //  cv::addWeighted(roi, alpha, waterMarkImgRGB, beta, 0.0, roi);
+
+    // 如果图片包含透明通道，使用该通道作为掩码
+    if (waterMarkImg.channels() == 4)
+    {
+        // printf("waterMarkImg.channels() == 4\n");
+
+        // int from_to[] = {0, 0, 1, 1, 2, 2};
+        // cv::mixChannels(&waterMarkImg, 1, &targetROI, 1, from_to, 3);
+
+        // // 分离通道
+        // std::vector<cv::Mat> channels(4);
+        // cv::split(waterMarkImg, channels);
+
+        // // 使用alpha通道作为掩码
+        // cv::Mat alphaMask = channels[3];
+
+        // // 使用掩码将图片复制到ROI中
+        // waterMarkImg.copyTo(roi, alphaMask);
+        // 分离源图像的通道
+        // std::vector<cv::Mat> channels(4);
+        // cv::split(waterMarkImg, channels);
+
+        // // 忽略Alpha通道，只取RGB通道
+        // cv::Mat rgb[3] = {channels[0], channels[1], channels[2]};
+        // cv::Mat colorImage;
+        // cv::merge(img, colorImage);
+
+        // // 将RGB图像复制到ROI中
+        // colorImage(cv::Rect(0, 0, waterMarkImg.cols, waterMarkImg.rows)).copyTo(roi);
+    }
+    else
+    {
+        printf("waterMarkImg.channels() == 3\n");
+        // 直接复制
+        // waterMarkImg.copyTo(roi);
+    }
+
+#if 0
     for (i = 0; i < 3; i++)
     {
         // 设置文本属性
@@ -160,6 +267,7 @@ void draw_water_mark(Mat img)
 
         ft2->putText(img, waterMarkText, textOrg, fontHeight, textColor, -1, cv::LINE_AA, true);
     }
+#endif
 }
 
 // 监控回调函数

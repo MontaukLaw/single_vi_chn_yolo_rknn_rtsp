@@ -43,6 +43,8 @@ extern "C"
         water_mark en_water_mark[WATER_MARK_TEXT_LINES];
 
         int clean_old_box_frames;
+        int defog_level;
+        bool fec_enable;
     } g_params;
 
     std::map<std::string, std::string> readConfig(const std::string &filename);

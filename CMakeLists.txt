@@ -57,7 +57,7 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/comm.cc
         src/rknn_funcs.cpp
         src/rknn_model.cc
-        src/sample_common_isp.c
+        # src/sample_common_isp.c
         src/yolo.cc
         src/monitor.cc
         src/param.cc

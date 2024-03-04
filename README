@@ -1,3 +1,8 @@
+0304
+config.ini中使用fec_level调整鱼眼畸变校正等级, 0-255
+ldch_level同理
+
+
 0303
 1. 除雾等级是0-255, 实际对应是1-10, 1是最弱, 10是最强, 0是没有, 在config.ini中进行配置defog_level
 2. 同样配置config.ini可以设置鱼眼畸变校正开关: fec_enable=true

@@ -1,9 +1,6 @@
 #include "comm.h"
 
-static RK_S32 s32CamId = 0;
-static rk_aiq_working_mode_t hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
-static RK_BOOL bMultictx = RK_FALSE;
-static RK_CHAR *pIqfilesPath = (RK_CHAR *)"/oem/etc/iqfiles/";
+
 int g_flag_run = 1;
 
 static pthread_t observer_thread_id;
@@ -12,6 +9,7 @@ static pthread_t rknn_yolo_thread_id;
 static pthread_t get_rga_buffer_thread_id;
 rknn_list *rknn_list_;
 
+RK_S32 s32CamId = 0;
 rtsp_demo_handle g_rtsplive = NULL;
 rtsp_session_handle g_rtsp_session_c0;
 
@@ -44,16 +42,11 @@ static void save_file(char *fileName, void *data, int dataLen)
     fclose(save_file);
 }
 
+#if 0
 // 初始化isp
 static void init_isp(void)
 {
     SAMPLE_COMM_ISP_Init(s32CamId, hdr_mode, bMultictx, pIqfilesPath);
-
-    if (gParams.fec_enable)
-    {
-        // 打开FEC
-        SAMPLE_COMM_ISP_SetFecEn(s32CamId, RK_TRUE);
-    }
 
     SAMPLE_COMM_ISP_Run(s32CamId);
     SAMPLE_COMM_ISP_SetFrameRate(s32CamId, FPS);
@@ -69,7 +62,14 @@ static void init_isp(void)
     {
         SAMPLE_COMM_ISP_SET_DefogEnable(s32CamId, RK_FALSE);
     }
+
+    if (gParams.fec_level)
+    {
+        rk_aiq_uapi_setFecCorrectLevel(s32CamId, gParams.fec_level);
+    }
 }
+#endif
+
 
 static void sig_proc(int signo)
 {

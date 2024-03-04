@@ -66,6 +66,7 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/h264_venc.cc
         src/vi_rga_venc.cpp
         src/rknn_process.cc
-        src/img_utils.cc)
+        src/img_utils.cc
+        src/isp_app.cpp)
 
 target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga)

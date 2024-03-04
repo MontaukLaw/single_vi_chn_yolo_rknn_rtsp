@@ -39,21 +39,22 @@ extern "C"
 {
 #endif
 
-    RK_S32 SAMPLE_COMM_ISP_Init(RK_S32 CamId, rk_aiq_working_mode_t WDRMode,
-                                RK_BOOL MultiCam, const char *iq_file_dir);
-
     RK_S32 SAMPLE_COMM_ISP_Stop(RK_S32 CamId);
+    // RK_S32 SAMPLE_COMM_ISP_Init(RK_S32 CamId, rk_aiq_working_mode_t WDRMode,
+    //                             RK_BOOL MultiCam, const char *iq_file_dir);
 
-    RK_S32 SAMPLE_COMM_ISP_Run(RK_S32 CamId); // isp stop before vi streamoff
+    // RK_S32 SAMPLE_COMM_ISP_Stop(RK_S32 CamId);
 
-    RK_S32 SAMPLE_COMM_ISP_SetFrameRate(RK_S32 CamId, RK_U32 uFps);
+    // RK_S32 SAMPLE_COMM_ISP_Run(RK_S32 CamId); // isp stop before vi streamoff
 
-    RK_S32 SAMPLE_COMM_ISP_SET_DefogStrength(RK_S32 CamId, RK_U32 u32Mode,
-                                             RK_U32 u32Value);
-    
-    RK_S32 SAMPLE_COMM_ISP_SET_DefogEnable(RK_S32 CamId, RK_U32 u32Mode);
+    // RK_S32 SAMPLE_COMM_ISP_SetFrameRate(RK_S32 CamId, RK_U32 uFps);
 
-    RK_S32 SAMPLE_COMM_ISP_SetFecEn(RK_S32 CamId, RK_BOOL bFECEnable);
+    // RK_S32 SAMPLE_COMM_ISP_SET_DefogStrength(RK_S32 CamId, RK_U32 u32Mode,
+    //                                          RK_U32 u32Value);
+
+    // RK_S32 SAMPLE_COMM_ISP_SET_DefogEnable(RK_S32 CamId, RK_U32 u32Mode);
+
+    // RK_S32 SAMPLE_COMM_ISP_SetFecEn(RK_S32 CamId, RK_BOOL bFECEnable);
 
 #ifdef __cplusplus
 }

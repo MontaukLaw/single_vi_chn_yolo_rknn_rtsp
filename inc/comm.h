@@ -16,6 +16,9 @@
 #include <vector>
 #include <stdint.h>
 
+#include <assert.h>
+#include <fcntl.h>
+
 // #include "CImg/CImg.h"
 
 #ifdef __cplusplus
@@ -41,6 +44,7 @@ extern "C"
 #include "rk_aiq_comm.h"
 #include "rga_func.h"
 #include "h264_venc.h"
+
 
     void common_vi_setup(struct Session *session, VI_CHN_WORK_MODE mode, RK_S32 vi_pipe);
 
@@ -80,6 +84,9 @@ extern "C"
     long int get_time_now_sec(void);
 
     void fill_image_data(void *inputData, void *modelData, int inputWidth, int inputHeight, int modelWidth, int modelHeight);
+
+    // int init_isp_raw(void);
+    void init_isp(void);
 
 #ifdef __cplusplus
 }

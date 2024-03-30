@@ -113,7 +113,6 @@ int draw_connect_line_to_point(Mat img, Point startPoint, box_info_t boxInfo)
 // 加水印
 void draw_water_mark(Mat img)
 {
-
     cv::Ptr<cv::freetype::FreeType2> ft2;
     ft2 = cv::freetype::createFreeType2();
     ft2->loadFontData(gParams.chinese_font_path, 0);
@@ -441,6 +440,7 @@ void *observer_thread(void *arg)
             lastTime = curTime;
         }
 
+        // 按照config时间间隔保存jpeg
         save_jpeg(orig_img);
 
         RK_MPI_SYS_SendMediaBuffer(RK_ID_VENC, MONITOR_VENC_CHN, buffer);

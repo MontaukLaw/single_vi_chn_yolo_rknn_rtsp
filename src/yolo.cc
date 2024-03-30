@@ -1,14 +1,17 @@
 #include "comm.h"
 
-#define LABEL_NALE_TXT_PATH "coco_80_labels_list.txt"
+#define LABEL_NALE_TXT_PATH "car_4_labels_list.txt"
 
 static char *labels[OBJ_CLASS_NUM];
 
 float conf_threshold = 0.45;
 // static const float conf_threshold = 0.6;
-const int anchor0[6] = {10, 13, 16, 30, 33, 23};
-const int anchor1[6] = {30, 61, 62, 45, 59, 119};
-const int anchor2[6] = {116, 90, 156, 198, 373, 326};
+// const int anchor0[6] = {10, 13, 16, 30, 33, 23};
+// const int anchor1[6] = {30, 61, 62, 45, 59, 119};
+// const int anchor2[6] = {116, 90, 156, 198, 373, 326};
+// const int anchor0[6] = {6, 4, 18, 10, 33, 19};
+// const int anchor1[6] = {50, 36, 66, 71, 130, 87};
+// const int anchor2[6] = {250, 175, 439, 291, 536, 409};
 
 inline static int clamp(float val, int min, int max)
 {

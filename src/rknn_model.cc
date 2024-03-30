@@ -27,7 +27,12 @@ using namespace cimg_library;
 
 rknn_input inputs[1];
 rknn_output outputs[3];
-int fixAnchors[18] = {10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326};
+
+// int fixAnchors[18] = {10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326};
+int fixAnchors[18] = {6, 4, 18, 10, 33, 19, 50, 36, 66, 71, 130, 87, 250, 175, 439, 291, 536, 409};
+// const int anchor0[6] = {6, 4, 18, 10, 33, 19};
+// const int anchor1[6] = {50, 36, 66, 71, 130, 87};
+// const int anchor2[6] = {250, 175, 439, 291, 536, 409};
 
 /*-------------------------------------------
                   Main Functions
@@ -145,7 +150,8 @@ int init_model(void)
 
     int ret = 0;
     // m_info.m_path = (char *) argv[1];
-    m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    // m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    m_info.m_path = (char *)"cars.rknn";
     // 初始化模型参数
     printf("model file is : %s \n", m_info.m_path);
     m_info.m_type = YOLOV5;
@@ -235,8 +241,8 @@ int predict(void *bufData, detect_result_group_t *detect_result_group)
     {
         detect_result_t *det_result = &(detect_result_group->results[i]);
         // printf("%s@(%d %d %d %d):%f\n", det_result->name,
-              // det_result->box.left, det_result->box.top, det_result->box.right,
-              //  det_result->box.bottom, det_result->prop);
+        // det_result->box.left, det_result->box.top, det_result->box.right,
+        //  det_result->box.bottom, det_result->prop);
     }
 
     // fclose(fp);

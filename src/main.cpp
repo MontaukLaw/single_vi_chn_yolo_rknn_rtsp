@@ -158,6 +158,9 @@ int main(void)
     // 创建rknn的队列，用于线程间保存rknn的推理结果
     create_rknn_list(&rknn_list_);
 
+    // 初始化RTP
+    init_rtp();
+
     // 初始化isp
     init_isp();
 
@@ -260,6 +263,7 @@ int main(void)
     g_flag_run = 0;
 
     printf("start to clean\n");
+    
     // 清洁工作
     destroy_all();
 

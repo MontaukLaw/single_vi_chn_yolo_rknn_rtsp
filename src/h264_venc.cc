@@ -69,12 +69,39 @@ void init_rtsp()
 #endif
 }
 
+void rtp_obs(MEDIA_BUFFER mb)
+{
+    int mb_size = RK_MPI_MB_GetSize(mb);
+    uint8_t *pData = (uint8_t *)malloc(mb_size);
+    if (pData == nullptr)
+    {
+        printf("Alloc failde\n");
+        return;
+    }
+
+    memcpy(pData, (uint8_t *)RK_MPI_MB_GetPtr(mb), mb_size);
+
+    feed_rtp(pData, mb_size);
+
+    free(pData);
+
+    // int i = 0;
+    // for (i = 0; i < 30; i++)
+    // {
+    //     printf("0x%02x ", pData[i]);
+    // }
+    // printf("\n");
+}
+
 // 用于监控的编码的回调
 // real thing
 void monitor_venc_packet_cb(MEDIA_BUFFER mb)
 {
 
     static RK_S32 packet_cnt = 0;
+
+    rtp_obs(mb);
+
     // printf("#Get packet-%d, size %zu\n", packet_cnt, RK_MPI_MB_GetSize(mb));
     if (g_rtsplive && g_rtsp_session_c0)
     {
@@ -92,8 +119,8 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     // pthread_mutex_lock(&mp4_mutex);
     // 录制mp4
     record_mp4(mb);
-    // pthread_mutex_unlock(&mp4_mutex);
 
+    // pthread_mutex_unlock(&mp4_mutex);
     RK_MPI_MB_ReleaseBuffer(mb);
     packet_cnt++;
 }

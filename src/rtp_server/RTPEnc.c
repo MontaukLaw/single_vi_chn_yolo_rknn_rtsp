@@ -249,7 +249,7 @@ void rtpSendH264HEVC(RTPMuxContext *ctx, UDPContext *udp, const uint8_t *buf, in
         // 这里去掉
         // usleep(1000000 / 25);
         // suppose the frame rate is 25 fps
-        ctx->timestamp += (90000.0 / 25);
+        // ctx->timestamp += (90000.0 / 25);
         r = r1;
     }
 }

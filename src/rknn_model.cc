@@ -149,7 +149,7 @@ int init_model(void)
     // m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
     // crane_mAP_046_best.rknn
     // m_info.m_path = (char *)"yolov5n.rknn";
-    m_info.m_path = (char *)"crane_mAP_046_best.rknn";
+    m_info.m_path = (char *)"crane_1126_hw.rknn";
     // 初始化模型参数
     printf("model file is : %s \n", m_info.m_path);
     m_info.m_type = YOLOV5;

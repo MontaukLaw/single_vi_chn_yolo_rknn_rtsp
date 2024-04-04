@@ -23,6 +23,8 @@ void print_fps(void)
     }
 }
 
+struct timeval start, end, last_time;
+
 // size:691200
 void *rknn_yolo_thread(void *args)
 {
@@ -42,7 +44,7 @@ void *rknn_yolo_thread(void *args)
     {
 
         // 计算帧率
-        print_fps();
+        // print_fps();
 
         // 获取rga的数据
         buffer = RK_MPI_SYS_GetMediaBuffer(RK_ID_RGA, RKNN_RGA_CHN, -1);
@@ -65,10 +67,15 @@ void *rknn_yolo_thread(void *args)
         void *modeInputData = malloc(YOLO_INPUT_SIZE);
         memset(modeInputData, 0x7F, YOLO_INPUT_SIZE);
 
+        // 打印当前时间
+        // printf("current time:%ld\n", get_time_now_sec());
+
         fill_image_data(RK_MPI_MB_GetPtr(buffer), modeInputData, RKNN_INPUT_IMG_WIDTH, RKNN_INPUT_IMG_HEIGHT, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE);
         detect_result_group_t detect_result_group_;
         memset(&detect_result_group_, 0, sizeof(detect_result_group_t));
 
+        // gettimeofday(&start, NULL);
+        // printf("start:%ld\n", start.tv_usec);
         // Post Process
         int pResult = predict(modeInputData, &detect_result_group_);
 
@@ -86,7 +93,8 @@ void *rknn_yolo_thread(void *args)
                 noBoxCounter = 0;
             }
         }
-
+        // gettimeofday(&end, NULL);
+        // printf("predict used :%ld ms\n", (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000);
         // put detect result to list
         // detectResultNumber = detect_result_group.detect_count;
         // if (detect_result_group.detect_count > 0)

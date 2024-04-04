@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <stdbool.h>
+#include "rknn_api.h"
 
 #define _BASETSD_H
 
@@ -145,7 +146,10 @@ int init_model(void)
 
     int ret = 0;
     // m_info.m_path = (char *) argv[1];
-    m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    // m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    // crane_mAP_046_best.rknn
+    // m_info.m_path = (char *)"yolov5n.rknn";
+    m_info.m_path = (char *)"crane_mAP_046_best.rknn";
     // 初始化模型参数
     printf("model file is : %s \n", m_info.m_path);
     m_info.m_type = YOLOV5;
@@ -210,34 +214,38 @@ int predict(void *bufData, detect_result_group_t *detect_result_group)
 {
 
     // printf("start detect \n");
-    struct timeval start_time, stop_time;
+    struct timeval start_time, mid_stime, stop_time;
     int ret;
 
     // 把数据放入输入tensor
     inputs[0].buf = bufData;
 
+    // 使用rknn的api进行推理
+    rknn_inputs_set(m_ctx, 1, inputs);
+
     // 统计时间， 方便后面计时
     gettimeofday(&start_time, NULL);
 
-    // 使用rknn的api进行推理
-    rknn_inputs_set(m_ctx, 1, inputs);
     ret = rknn_run(m_ctx, NULL);
+    
+    gettimeofday(&mid_stime, NULL);
+    printf("once run use %f ms\n", (__get_us(mid_stime) - __get_us(start_time)) / 1000);
+
     ret = rknn_outputs_get(m_ctx, 3, outputs, NULL);
+    // gettimeofday(&stop_time, NULL);
+    // printf("get output use %f ms\n", (__get_us(stop_time) - __get_us(mid_stime)) / 1000);
 
     /* 后处理 */
     post_process_640_v5(outputs, &m_info, detect_result_group);
-
-    gettimeofday(&stop_time, NULL);
-
-    // printf("once run use %f ms\n", (__get_us(stop_time) - __get_us(start_time)) / 1000);
 
     for (int i = 0; i < detect_result_group->detect_count; i++)
     {
         detect_result_t *det_result = &(detect_result_group->results[i]);
         // printf("%s@(%d %d %d %d):%f\n", det_result->name,
-              // det_result->box.left, det_result->box.top, det_result->box.right,
-              //  det_result->box.bottom, det_result->prop);
+        // det_result->box.left, det_result->box.top, det_result->box.right,
+        //  det_result->box.bottom, det_result->prop);
     }
+
 
     // fclose(fp);
     return ret;

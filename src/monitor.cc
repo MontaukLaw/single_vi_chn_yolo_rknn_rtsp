@@ -300,6 +300,7 @@ void *observer_thread_good(void *arg)
             frameCounter = 0;
             lastTime = curTime;
         }
+
         RK_MPI_SYS_SendMediaBuffer(RK_ID_VENC, MONITOR_VENC_CHN, buffer);
         RK_MPI_MB_ReleaseBuffer(buffer);
     }
@@ -436,7 +437,7 @@ void *observer_thread(void *arg)
         // printf("curTime:%lld lastTime:%lld\n", curTime, lastTime);
         if ((curTime != lastTime))
         {
-            printf("monitor fps:%d\n", frameCounter);
+            // printf("monitor fps:%d\n", frameCounter);
             frameCounter = 0;
             lastTime = curTime;
         }

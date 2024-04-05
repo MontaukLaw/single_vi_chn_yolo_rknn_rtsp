@@ -1,6 +1,6 @@
 #include "monitor.h"
 #include "mp4_process.h"
-
+#include "deep_fence.h"
 using namespace cv;
 
 extern g_params gParams;
@@ -12,103 +12,6 @@ extern int boxDisplayCounterDown;
 
 box_info_t boxInfoList[OBJ_NUMB_MAX_SIZE];
 
-// 画虚线
-void drawDashedLine(cv::Mat &img, cv::Point pt1, cv::Point pt2,
-                    const cv::Scalar &color, int thickness = 1, int lineType = cv::LINE_8,
-                    int dashLength = 10, int gapLength = 10)
-{
-    double distance = sqrt(pow(pt2.x - pt1.x, 2) + pow(pt2.y - pt1.y, 2));
-    double dashGapTotalLength = dashLength + gapLength;
-    int dashes = distance / dashGapTotalLength;
-
-    for (int i = 0; i < dashes; ++i)
-    {
-        cv::Point start = pt1 + (pt2 - pt1) * ((i * dashGapTotalLength) / distance);
-        cv::Point end = pt1 + (pt2 - pt1) * (((i * dashGapTotalLength) + dashLength) / distance);
-        cv::line(img, start, end, color, thickness, lineType);
-    }
-}
-
-// 在图像上添加分类标签
-void draw_label_text(Mat img, std::string text, Point org)
-{
-    int fontFace = cv::FONT_HERSHEY_SIMPLEX;
-    double fontScale = 2;
-    int thickness = 2;
-    Scalar color(255, 0, 0); // BGR颜色值，蓝色
-    // Point org(50, 50);       // 文本起始坐标
-
-    // 在图像上添加文本
-    // putText(img, text, org, fontFace, fontScale, color, thickness, cv::LINE_AA);
-    putText(img, text, org, fontFace, fontScale, color, thickness, LINE_AA);
-}
-
-// 计算两点的距离
-int get_distance(Point p1, Point p2)
-{
-    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
-}
-
-// 找到4个数中最小的值
-int find_smallest_value(int v1, int v2, int v3, int v4)
-{
-    int min = v1;
-    if (v2 < min)
-    {
-        min = v2;
-    }
-    if (v3 < min)
-    {
-        min = v3;
-    }
-    if (v4 < min)
-    {
-        min = v4;
-    }
-    return min;
-}
-
-// 画连接的虚线
-int draw_connect_line_to_point(Mat img, Point startPoint, box_info_t boxInfo)
-{
-    if (gParams.draw_distance == false)
-    {
-        return 0;
-    }
-    // 找到4个顶点中, 离 startPoint 最近的点
-    int minIdx = 0;
-    int distance1 = get_distance(startPoint, Point(boxInfo.left, boxInfo.top));
-    int distance2 = get_distance(startPoint, Point(boxInfo.right, boxInfo.top));
-    int distance3 = get_distance(startPoint, Point(boxInfo.left, boxInfo.bottom));
-    int distance4 = get_distance(startPoint, Point(boxInfo.right, boxInfo.bottom));
-
-    // printf("distance1:%d, distance2:%d, distance3:%d, distance4:%d\n", distance1, distance2, distance3, distance4);
-
-    // 获取最小的距离
-    int minDistance = find_smallest_value(distance1, distance2, distance3, distance4);
-    if (minDistance == distance1)
-    {
-        drawDashedLine(img, startPoint, Point(boxInfo.left, boxInfo.top), Scalar(0, 255, 0), 2, LINE_AA);
-        // line(img, startPoint, Point(boxInfo.left, boxInfo.top), Scalar(0, 255, 0), 2, LINE_AA);
-    }
-    else if (minDistance == distance2)
-    {
-        drawDashedLine(img, startPoint, Point(boxInfo.right, boxInfo.top), Scalar(0, 255, 0), 2, LINE_AA);
-        // line(img, startPoint, Point(boxInfo.right, boxInfo.top), Scalar(0, 255, 0), 2, LINE_AA);
-    }
-    else if (minDistance == distance3)
-    {
-        drawDashedLine(img, startPoint, Point(boxInfo.left, boxInfo.bottom), Scalar(0, 255, 0), 2, LINE_AA);
-        // line(img, startPoint, Point(boxInfo.left, boxInfo.bottom), Scalar(0, 255, 0), 2, LINE_AA);
-    }
-    else if (minDistance == distance4)
-    {
-        drawDashedLine(img, startPoint, Point(boxInfo.right, boxInfo.bottom), Scalar(0, 255, 0), 2, LINE_AA);
-        // line(img, startPoint, Point(boxInfo.right, boxInfo.bottom), Scalar(0, 255, 0), 2, LINE_AA);
-    }
-
-    return minDistance;
-}
 
 // 加水印
 void draw_water_mark(Mat img)
@@ -163,6 +66,7 @@ void draw_water_mark(Mat img)
 }
 
 // 监控回调函数
+// useless
 void monitor_rga_packet_cb(MEDIA_BUFFER mb)
 {
 
@@ -329,6 +233,7 @@ static void save_jpeg(Mat orig_img)
 }
 
 // 6220800
+// 监控线程, 使用线程形式而非回调. 线程会自动取数据.
 void *observer_thread(void *arg)
 {
     MEDIA_BUFFER buffer = NULL;
@@ -398,6 +303,23 @@ void *observer_thread(void *arg)
             // 画框
             for (int i = 0; i < boxInfoListNumber; i++)
             {
+                // printf("class_index:%d\n", detect_result_group.results[i].class_index);
+                // 因为coco有80个类别，所以这里只画其中瓶子的, 瓶子的id是40
+                if (detect_result_group.results[i].class_index != 39)
+                {
+                    continue;
+                }
+                int r = 255;   // rand() % 256;
+                int g = 0; // rand() % 256;
+                int b = 0;   // rand() % 256;
+
+                // 之前的逻辑, 测试用, 现在改为判断深度框
+                draw_connection(detect_result_group.results[i], orig_img, boxInfoList[i]);
+
+                rectangle(orig_img, cv::Point(boxInfoList[i].left, boxInfoList[i].top),
+                          cv::Point(boxInfoList[i].right, boxInfoList[i].bottom), cv::Scalar(r, g, b), RKNN_BOX_BORDER);
+
+#if 0
                 // 取三个随机数
                 int r = 0;   // rand() % 256;
                 int g = 255; // rand() % 256;
@@ -408,14 +330,19 @@ void *observer_thread(void *arg)
                 rectangle(orig_img, cv::Point(boxInfoList[i].left, boxInfoList[i].top),
                           cv::Point(boxInfoList[i].right, boxInfoList[i].bottom), cv::Scalar(r, g, b), RKNN_BOX_BORDER);
 
+                // 画连接线
+
                 int distance = draw_connect_line_to_point(orig_img, Point(gParams.point_x, gParams.point_y), boxInfoList[i]);
 
                 // 画框上的文字距离框10个像素
                 char labelStr[100];
                 sprintf(labelStr, "%s: %d", detect_result_group.results[i].name, distance);
                 draw_label_text(orig_img, std::string(labelStr), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
+
                 // draw_text(orig_img, std::string str(detect_result_group.results[i].name), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
                 // Point(boxInfoList[i].centerX, boxInfoList[i].centerY));
+
+#endif
             }
 
             boxInfoListNumber = 0;
@@ -423,6 +350,9 @@ void *observer_thread(void *arg)
         }
 
         draw_water_mark(orig_img);
+
+        // 如果不需要绘制深度框, 就把这一句注释掉即可.
+        draw_deep_fence_frames(orig_img);
 
         // cv转颜色
         // cvtColor(orig_img, orig_img, COLOR_BGR2RGB);

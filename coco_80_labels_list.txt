@@ -29,7 +29,7 @@ tie
 suitcase
 frisbee
 skis
-.
+snowboard
 sports ball
 kite
 baseball bat

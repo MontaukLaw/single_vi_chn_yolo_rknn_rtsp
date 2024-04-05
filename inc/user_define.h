@@ -7,7 +7,9 @@
 #define DRAW_RESULT_BOX_CHN_INDEX 0
 #define RK_NN_RGA_CHN_INDEX 1
 
-#define OBJ_CLASS_NUM 1
+
+// 修改模型的时候，需要修改这个值
+#define OBJ_CLASS_NUM 80
 #define PROP_BOX_SIZE (5 + OBJ_CLASS_NUM)
 #define OBJ_NAME_MAX_SIZE 16
 #define OBJ_NUMB_MAX_SIZE 64

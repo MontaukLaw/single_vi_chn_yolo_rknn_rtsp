@@ -4,7 +4,6 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/freetype.hpp"
 
-
 #ifdef __cplusplus
 extern "C"
 {

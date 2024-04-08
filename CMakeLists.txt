@@ -70,3 +70,7 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/deep_fence.cc)
 
 target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga)
+
+add_executable(vi_venc_rtsp_test src/vi_venc_rtsp_test.cpp src/comm.cc ) 
+target_link_libraries(vi_venc_rtsp_test ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} rga)
+

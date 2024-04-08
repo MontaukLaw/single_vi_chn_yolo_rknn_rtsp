@@ -94,6 +94,10 @@ void draw_connection(detect_result_t detect_result, Mat img, box_info_t boxInfo)
             // draw_label_text(img, std::string(labelStr), Point(boxInfo.left, boxInfo.top - 10));
 
             // line(img, Point(detect_result.box.left, detect_result.box.top), Point(deep_frames[i].deep_point_x, deep_frames[i].deep_point_y), Scalar(0, 255, 0), FENCE_WIDTH);
+            // 画框上的文字距离框10个像素
+            char labelStr[100];
+            sprintf(labelStr, "%s: %d", detect_result.name, distance);
+            draw_label_text(img, std::string(labelStr), Point(boxInfo.left, boxInfo.top - 10));
         }
         else
         {

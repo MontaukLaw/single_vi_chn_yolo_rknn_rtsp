@@ -1,8 +1,8 @@
 #include "comm.h"
 
 // 修改模型的时候，需要修改这个值
-#define LABEL_NALE_TXT_PATH "coco_80_labels_list.txt"
-// #define LABEL_NALE_TXT_PATH "crane_labels_list.txt"
+// #define LABEL_NALE_TXT_PATH "coco_80_labels_list.txt"
+#define LABEL_NALE_TXT_PATH "crane_labels_list.txt"
 
 static char *labels[OBJ_CLASS_NUM];
 

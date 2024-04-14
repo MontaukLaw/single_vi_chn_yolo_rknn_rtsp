@@ -17,6 +17,7 @@ message("x11: ${X11_LIB_INC}")
 set(MP4_LIBS mp4v2)
 link_directories(include lib)
 
+
 add_definitions(-g -O0 -ggdb -gdwarf -funwind-tables -rdynamic)
 add_definitions(-Wno-write-strings -Wno-return-type)
 
@@ -68,4 +69,4 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/rknn_process.cc
         src/img_utils.cc)
 
-target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga)
+target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga testPYSo)

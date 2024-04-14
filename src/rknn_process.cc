@@ -72,6 +72,13 @@ void *rknn_yolo_thread(void *args)
         // Post Process
         int pResult = predict(modeInputData, &detect_result_group_);
 
+        std::vector<_outMinDitsReuslt> outMindist;
+        outMindist.resize(0);
+
+        int sizeN = 0;
+        sizeN = calDistance(&detect_result_group, outMindist);
+        printf("dd= %d,sizeN=%d\n", outMindist.size(), sizeN);
+        
         if (detect_result_group_.detect_count > 0)
         {
             memcpy(&detect_result_group, &detect_result_group_, sizeof(detect_result_group_t));

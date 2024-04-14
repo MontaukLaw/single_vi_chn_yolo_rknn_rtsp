@@ -41,6 +41,7 @@ extern "C"
 #include "rk_aiq_comm.h"
 #include "rga_func.h"
 #include "h264_venc.h"
+#include "tran.h"
 
     void common_vi_setup(struct Session *session, VI_CHN_WORK_MODE mode, RK_S32 vi_pipe);
 

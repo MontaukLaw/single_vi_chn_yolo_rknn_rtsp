@@ -1,14 +1,12 @@
 #ifndef __RKNN_FUNCS_H__
 #define __RKNN_FUNCS_H__
 
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 #include "user_struct.h"
 // #include "postprocess.h"
-
 
 void rknn_list_push(rknn_list *s, long timeval, detect_result_group_t detect_result_group);
 

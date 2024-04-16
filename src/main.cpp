@@ -15,6 +15,8 @@ rknn_list *rknn_list_;
 rtsp_demo_handle g_rtsplive = NULL;
 rtsp_session_handle g_rtsp_session_c0;
 
+extern g_params gParams;
+
 long int get_time_now_us(void)
 {
     struct timeval tv;
@@ -27,19 +29,6 @@ long int get_time_now_sec(void)
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return tv.tv_sec;
-}
-
-static void save_file(char *fileName, void *data, int dataLen)
-{
-
-    FILE *save_file = fopen(fileName, "w");
-    if (!save_file)
-    {
-        printf("ERROR: Open file failed!\n");
-    }
-
-    fwrite(data, 1, dataLen, save_file);
-    fclose(save_file);
 }
 
 // 初始化isp
@@ -59,7 +48,7 @@ static void sig_proc(int signo)
 static void destroy_all(void)
 {
 
-    close_mp4_file_saving();
+    // close_mp4_file_saving();
 
     if (observer_thread_id)
     {
@@ -91,6 +80,8 @@ static void destroy_all(void)
     SAMPLE_COMM_ISP_Stop(s32CamId);
 
     destory_rknn_list(&rknn_list_);
+
+    release_model();
 }
 
 // H264 codec
@@ -148,7 +139,7 @@ int main(void)
     signal(SIGINT, sig_proc);
 
     // 初始化模型
-    ret = init_model();
+    ret = init_model(gParams.model_name.c_str());
     if (ret < 0)
     {
         printf("init model failed\n");

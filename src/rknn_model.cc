@@ -140,12 +140,14 @@ int query_model_info(MODEL_INFO *m, rknn_context ctx)
 double __get_us(struct timeval t) { return (t.tv_sec * 1000000 + t.tv_usec); }
 
 // 模型初始化
-int init_model(void)
+int init_model(char *model_name)
 {
 
     int ret = 0;
     // m_info.m_path = (char *) argv[1];
-    m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    // m_info.m_path = (char *)"yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn";
+    m_info.m_path = model_name;
+
     // 初始化模型参数
     printf("model file is : %s \n", m_info.m_path);
     m_info.m_type = YOLOV5;
@@ -208,7 +210,6 @@ int init_model(void)
  */
 int predict(void *bufData, detect_result_group_t *detect_result_group)
 {
-
     // printf("start detect \n");
     struct timeval start_time, stop_time;
     int ret;
@@ -234,9 +235,9 @@ int predict(void *bufData, detect_result_group_t *detect_result_group)
     for (int i = 0; i < detect_result_group->detect_count; i++)
     {
         detect_result_t *det_result = &(detect_result_group->results[i]);
-        // printf("%s@(%d %d %d %d):%f\n", det_result->name,
-              // det_result->box.left, det_result->box.top, det_result->box.right,
-              //  det_result->box.bottom, det_result->prop);
+        printf("%s@(%d %d %d %d):%f\n", det_result->name,
+               det_result->box.left, det_result->box.top, det_result->box.right,
+               det_result->box.bottom, det_result->prop);
     }
 
     // fclose(fp);
@@ -251,7 +252,7 @@ int main_test(int argc, char **argv)
     // memset(&drm_ctx, 0, sizeof(drm_context));
     // drm_fd = drm_init(&drm_ctx);
 
-    ret = init_model();
+    ret = init_model("yolov5s_relu_tk1_RV1109_1126_u8_precompile.rknn");
     if (ret < 0)
     {
         printf("init model failed\n");

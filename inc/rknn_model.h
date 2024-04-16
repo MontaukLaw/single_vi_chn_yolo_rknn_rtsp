@@ -9,8 +9,12 @@ extern "C"
 #endif
 
     // int init_model(int argc, char **argv);
-    int init_model(void);
+    // int init_model(void);
+
+    int init_model(char *model_name);
+    
     // int predict(void *bufData);
+    
     int predict(void *bufData, detect_result_group_t *detect_result_group);
 
 #ifdef __cplusplus

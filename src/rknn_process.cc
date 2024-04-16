@@ -23,6 +23,19 @@ void print_fps(void)
     }
 }
 
+static void save_file(char *fileName, void *data, int dataLen)
+{
+
+    FILE *save_file = fopen(fileName, "w");
+    if (!save_file)
+    {
+        printf("ERROR: Open file failed!\n");
+    }
+
+    fwrite(data, 1, dataLen, save_file);
+    fclose(save_file);
+}
+
 // size:691200
 void *rknn_yolo_thread(void *args)
 {
@@ -57,8 +70,12 @@ void *rknn_yolo_thread(void *args)
         if (printCounter % 30 == 1)
         {
             print_mb_info(buffer);
-            // printf("Saving buffer to file\n");
-            // save_file("640x360.rgb", RK_MPI_MB_GetPtr(buffer), RK_MPI_MB_GetSize(buffer));
+        }
+
+        if (printCounter == 30)
+        {
+            printf("Saving buffer to file\n");
+            save_file("640x360.rgb", RK_MPI_MB_GetPtr(buffer), RK_MPI_MB_GetSize(buffer));
         }
 
         // 开始detect
@@ -69,19 +86,19 @@ void *rknn_yolo_thread(void *args)
         detect_result_group_t detect_result_group_;
         memset(&detect_result_group_, 0, sizeof(detect_result_group_t));
 
-        // Post Process
-        int pResult = predict(modeInputData, &detect_result_group_);
+        detect(modeInputData, &detect_result_group_);
+        // int pResult = predict(modeInputData, &detect_result_group_);
 
         std::vector<_outMinDitsReuslt> outMindist;
         outMindist.resize(0);
 
         int sizeN = 0;
-        sizeN = calDistance(&detect_result_group, outMindist);
-        printf("dd= %d,sizeN=%d\n", outMindist.size(), sizeN);
-        
+        // sizeN = calDistance(&detect_result_group, outMindist);
+        // printf("dd= %d,sizeN=%d\n", outMindist.size(), sizeN);
+
         if (detect_result_group_.detect_count > 0)
         {
-            memcpy(&detect_result_group, &detect_result_group_, sizeof(detect_result_group_t));
+            // memcpy(&detect_result_group, &detect_result_group_, sizeof(detect_result_group_t));
             noBoxCounter = 0;
         }
         else

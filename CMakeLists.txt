@@ -57,7 +57,7 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/main.cpp
         src/comm.cc
         src/rknn_funcs.cpp
-        src/rknn_model.cc
+        # src/rknn_model.cc
         src/sample_common_isp.c
         src/yolo.cc
         src/monitor.cc
@@ -69,4 +69,24 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/rknn_process.cc
         src/img_utils.cc)
 
-target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga testPYSo)
+target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} 
+                        pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga testPYSo
+                        yolo_detect)
+
+# add_executable(prediect_demo src/predict_demo_src/predict_demo.cc 
+#                              src/rknn_model.cc 
+#                              src/yolo.cc 
+#                              src/rknn_funcs.cpp
+#                              src/img_utils.cc)
+
+# target_link_libraries(prediect_demo ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl rga)
+
+# add_executable(prediect_app src/predict_demo_src/predict_main.cc 
+#                             src/predict_demo_src/postprocess.cc
+#                             src/rknn_funcs.cpp
+#                             src/img_utils.cc) 
+
+# target_link_libraries(prediect_app ${OPENCV_LIBS} ${RKNN_LIBS} pthread dl rga)
+
+# add_executable(predict_lib_demo src/predict_demo_src/predict_lib_demo.cc )
+# target_link_libraries(predict_lib_demo yolo_detect pthread dl)

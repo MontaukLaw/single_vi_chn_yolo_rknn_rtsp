@@ -192,7 +192,7 @@ void monitor_rga_packet_cb(MEDIA_BUFFER mb)
         rknn_list_pop(rknn_list_, &time_before, &detect_result_group);
         // printf("result count:%d \n", detect_result_group.count);
         int scale = RTSP_INPUT_VI_WIDTH / MODEL_INPUT_SIZE;
-        for (int j = 0; j < detect_result_group.detect_count; j++)
+        for (int j = 0; j < detect_result_group.count; j++)
         {
             int x = detect_result_group.results[j].box.left * scale;
             int startY = (detect_result_group.results[j].box.top - (MODEL_INPUT_SIZE - RKNN_INPUT_IMG_HEIGHT) / 2);
@@ -358,11 +358,11 @@ void *observer_thread(void *arg)
 
         Mat orig_img = Mat(RTSP_INPUT_VI_HEIGHT, RTSP_INPUT_VI_WIDTH, CV_8UC3, RK_MPI_MB_GetPtr(buffer));
 
-        if (detect_result_group.detect_count > 0)
+        if (detect_result_group.count > 0)
         {
             // printf("rknn_list_size:%d\n", rknn_list_size(rknn_list_));
             int scale = RTSP_INPUT_VI_WIDTH / MODEL_INPUT_SIZE;
-            for (int j = 0; j < detect_result_group.detect_count; j++)
+            for (int j = 0; j < detect_result_group.count; j++)
             {
                 int x = detect_result_group.results[j].box.left * scale;
                 int startY = (detect_result_group.results[j].box.top - (MODEL_INPUT_SIZE - RKNN_INPUT_IMG_HEIGHT) / 2);

@@ -112,7 +112,6 @@ typedef struct _detect_result_t
 typedef struct _detect_result_group_t
 {
     int id;
-    int detect_count;
     int count;
     detect_result_t results[OBJ_NUMB_MAX_SIZE];
 } detect_result_group_t;

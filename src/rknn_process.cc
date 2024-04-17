@@ -83,21 +83,67 @@ void *rknn_yolo_thread(void *args)
         memset(modeInputData, 0x7F, YOLO_INPUT_SIZE);
 
         fill_image_data(RK_MPI_MB_GetPtr(buffer), modeInputData, RKNN_INPUT_IMG_WIDTH, RKNN_INPUT_IMG_HEIGHT, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE);
-        detect_result_group_t detect_result_group_;
-        memset(&detect_result_group_, 0, sizeof(detect_result_group_t));
+
+        // detect_result_group_t detect_result_group_;
+        // memset(&detect_result_group_, 0, sizeof(detect_result_group_t));
+
+        detect_results_t detect_result_group_;
+        memset(&detect_result_group_, 0, sizeof(detect_results_t));
 
         detect(modeInputData, &detect_result_group_);
         // int pResult = predict(modeInputData, &detect_result_group_);
 
-        std::vector<_outMinDitsReuslt> outMindist;
-        outMindist.resize(0);
-
-        int sizeN = 0;
-        // sizeN = calDistance(&detect_result_group, outMindist);
         // printf("dd= %d,sizeN=%d\n", outMindist.size(), sizeN);
 
-        if (detect_result_group_.detect_count > 0)
+        if (detect_result_group_.count > 0)
         {
+
+            printf("detect_result_group_.count:%d\n", detect_result_group_.count);
+            // detect_result_group.detect_count = detect_result_group_.detect_count;
+            // detect_result_group.count = detect_result_group_.count;
+            for (int i = 0; i < detect_result_group_.count; i++)
+            {
+
+                printf("results[%d].name:%s\n", i, detect_result_group_.results[i].name);
+                printf("results[%d].prop:%f\n", i, detect_result_group_.results[i].prop);
+                printf("results[%d].box.left:%d\n", i, detect_result_group_.results[i].box.left);
+                printf("results[%d].box.right:%d\n", i, detect_result_group_.results[i].box.right);
+                printf("results[%d].box.top:%d\n", i, detect_result_group_.results[i].box.top);
+                printf("results[%d].box.bottom:%d\n", i, detect_result_group_.results[i].box.bottom);
+                printf("results[%d].class_index:%d\n", i, detect_result_group_.results[i].class_index);
+
+                // detect_result_group.results[i].class_index = detect_result_group_.results[i].class_index;
+                // detect_result_group.results[i].prop = detect_result_group_.results[i].prop;
+                // detect_result_group.results[i].box.left = detect_result_group_.results[i].box.left;
+                // detect_result_group.results[i].box.right = detect_result_group_.results[i].box.right;
+                // detect_result_group.results[i].box.top = detect_result_group_.results[i].box.top;
+                // detect_result_group.results[i].box.bottom = detect_result_group_.results[i].box.bottom;
+            }
+
+            // 数据搬运过去
+            memset(&detect_result_group, 0, sizeof(detect_result_group_t));
+            detect_result_group.count = detect_result_group_.count;
+            for (int i = 0; i < detect_result_group_.count; i++)
+            {
+                // int name_len =  sizeof(detect_result_group_.results[i].name);
+                // printf("size of name:%d\n", name_len);
+
+                // strcpy(detect_result_group.results[i].name, detect_result_group_.results[i].name);
+                memcpy(detect_result_group.results[i].name, detect_result_group_.results[i].name, OBJ_NAME_MAX_SIZE);
+                detect_result_group.results[i].class_index = detect_result_group_.results[i].class_index;
+                detect_result_group.results[i].prop = detect_result_group_.results[i].prop;
+                detect_result_group.results[i].box.left = detect_result_group_.results[i].box.left;
+                detect_result_group.results[i].box.right = detect_result_group_.results[i].box.right;
+                detect_result_group.results[i].box.top = detect_result_group_.results[i].box.top;
+                detect_result_group.results[i].box.bottom = detect_result_group_.results[i].box.bottom;
+            }
+
+            std::vector<_outMinDitsReuslt> outMindist;
+            outMindist.resize(0);
+
+            int sizeN = 0;
+            sizeN = calDistance(&detect_result_group, outMindist);
+
             // memcpy(&detect_result_group, &detect_result_group_, sizeof(detect_result_group_t));
             noBoxCounter = 0;
         }

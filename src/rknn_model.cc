@@ -232,7 +232,7 @@ int predict(void *bufData, detect_result_group_t *detect_result_group)
 
     // printf("once run use %f ms\n", (__get_us(stop_time) - __get_us(start_time)) / 1000);
 
-    for (int i = 0; i < detect_result_group->detect_count; i++)
+    for (int i = 0; i < detect_result_group->count; i++)
     {
         detect_result_t *det_result = &(detect_result_group->results[i]);
         printf("%s@(%d %d %d %d):%f\n", det_result->name,

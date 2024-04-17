@@ -349,7 +349,7 @@ int post_process_640_v5(rknn_output *rk_outputs, MODEL_INFO *m, detect_result_gr
     nms(validCount, filterBoxes, classId, indexArray, NMS_THRESHOLD, false);
 
     int last_count = 0;
-    group->detect_count = 0;
+    group->count = 0;
     /* 同一个画面如果有多个预测框结果，逐一输出到detect_result_group_t中*/
     for (int i = 0; i < validCount; ++i)
     {
@@ -381,6 +381,6 @@ int post_process_640_v5(rknn_output *rk_outputs, MODEL_INFO *m, detect_result_gr
         last_count++;
     }
 
-    group->detect_count = last_count;
+    group->count = last_count;
     return 0;
 }

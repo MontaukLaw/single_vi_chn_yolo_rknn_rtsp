@@ -58,12 +58,42 @@ extern "C"
     } detect_result_group_t;
 #endif
 
+    typedef struct _BOX_RECT_YOLO
+    {
+        int left;
+        int right;
+        int top;
+        int bottom;
+    } BOX_RECT_YOLO;
+
+    typedef struct __detect_rslt_t
+    {
+        char name[OBJ_NAME_MAX_SIZE];
+        BOX_RECT_YOLO box;
+        float prop;
+        int class_index;
+    } detect_rslt_t;
+
+    typedef struct _detect_results_t
+    {
+        int id;
+        int count;
+        detect_rslt_t results[OBJ_NUMB_MAX_SIZE];
+    } detect_results_t;
+
+    // int post_process(uint8_t *input0, uint8_t *input1, uint8_t *input2, int model_in_h, int model_in_w,
+    //                  float conf_threshold, float nms_threshold, float scale_w, float scale_h,
+    //                  std::vector<uint32_t> &qnt_zps, std::vector<float> &qnt_scales,
+    //                  detect_result_group_t *group);
+
+    // void detect(void *img_data, detect_result_group_t *detect_result_group);
+
     int post_process(uint8_t *input0, uint8_t *input1, uint8_t *input2, int model_in_h, int model_in_w,
                      float conf_threshold, float nms_threshold, float scale_w, float scale_h,
                      std::vector<uint32_t> &qnt_zps, std::vector<float> &qnt_scales,
-                     detect_result_group_t *group);
+                     detect_results_t *group);
 
-    void detect(void *img_data, detect_result_group_t *detect_result_group);
+    void detect(void *img_data, detect_results_t *detect_result_group);
 
     void release_model();
 

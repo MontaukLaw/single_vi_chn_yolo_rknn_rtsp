@@ -81,7 +81,8 @@ void *rknn_yolo_thread(void *args)
         // 开始detect
         void *modeInputData = malloc(YOLO_INPUT_SIZE);
         memset(modeInputData, 0x7F, YOLO_INPUT_SIZE);
-
+        
+        // 填充数据
         fill_image_data(RK_MPI_MB_GetPtr(buffer), modeInputData, RKNN_INPUT_IMG_WIDTH, RKNN_INPUT_IMG_HEIGHT, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE);
 
         // detect_result_group_t detect_result_group_;

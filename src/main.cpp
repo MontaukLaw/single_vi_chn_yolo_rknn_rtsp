@@ -205,7 +205,7 @@ int main(void)
         printf("ERROR: bind vi 0 to rga 0 failed\n");
         return -1;
     }
-
+#if 1
     // 创建rga通道，通道号为1
     ret = create_rga(RKNN_RGA_CHN, u32RknnWidthInput, u32RknnHeightInput, u32RknnWidth, u32RknnHeight);
     if (ret < 0)
@@ -228,6 +228,7 @@ int main(void)
         printf("RK_MPI_VI_StartStream 0 failed\n");
         return -1;
     }
+#endif
 
     ret = RK_MPI_VI_StartStream(s32CamId, DRAW_RESULT_BOX_CHN_INDEX);
     if (ret < 0)

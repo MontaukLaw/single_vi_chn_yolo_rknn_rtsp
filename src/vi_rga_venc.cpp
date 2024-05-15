@@ -126,6 +126,11 @@ int create_rga_nice(RK_S32 rgaChn, RK_U32 u32WidthInput, RK_U32 u32HeightInput, 
 }
 
 // 创建rga通道
+int create_rga_rknn(RK_S32 rgaChn, RK_U32 u32WidthInput, RK_U32 u32HeightInput, RK_U32 u32WidthOutput, RK_U32 u32HeightOutput)
+{
+}
+
+// 创建rga通道
 int create_rga(RK_S32 rgaChn, RK_U32 u32WidthInput, RK_U32 u32HeightInput, RK_U32 u32WidthOutput, RK_U32 u32HeightOutput)
 {
     RGA_ATTR_S stRgaAttr;
@@ -135,10 +140,13 @@ int create_rga(RK_S32 rgaChn, RK_U32 u32WidthInput, RK_U32 u32HeightInput, RK_U3
     stRgaAttr.stImgIn.imgType = IMAGE_TYPE_NV12;
     // 旋转
     stRgaAttr.u16Rotaion = 90;
-    stRgaAttr.stImgIn.u32X = 0;
-    stRgaAttr.stImgIn.u32Y = 0;
 
-    // 这里是旋转后的用于输入的宽高
+    // stRgaAttr.stImgIn.u32X = (2592 - 1080) / 2;
+    // stRgaAttr.stImgIn.u32Y = (1944 - 1920) / 2;
+    stRgaAttr.stImgIn.u32X = (u32WidthInput - u32HeightOutput) / 2;
+    stRgaAttr.stImgIn.u32Y = (u32HeightInput - u32WidthOutput) / 2;
+
+    // 这里是旋转后的用于输入的宽高, 即裁剪出的部分, 与上面的x,y组成了一个rect
     stRgaAttr.stImgIn.u32Width = u32HeightOutput;
     stRgaAttr.stImgIn.u32Height = u32WidthOutput;
 

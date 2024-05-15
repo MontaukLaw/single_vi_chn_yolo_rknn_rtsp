@@ -110,6 +110,8 @@ static int create_venc_chn(RK_U32 fps, RK_U32 u32Width, RK_U32 u32Height, RK_U32
     venc_chn_attr.stVencAttr.u32VirHeight = u32Height;
     venc_chn_attr.stVencAttr.u32Profile = 77; // main profile
 
+    // venc_chn_attr.stVencAttr.enRotation = VENC_ROTATION_90;
+
     ret = RK_MPI_VENC_CreateChn(vencChn, &venc_chn_attr);
     if (ret)
     {
@@ -125,14 +127,28 @@ int main(void)
 
     readConfig("config.ini");
 
-    RK_U32 u32Width = 1920;
-    RK_U32 u32Height = 1080;
+    // RK_U32 u32Width = 1920;
+    // RK_U32 u32Height = 1080;
+
+    // mx335 分辨率是 2592x1944
+    RK_U32 u32MX335Width = 2592;  // 1920;
+    RK_U32 u32MX335Height = 1944; // 1440;
+    // 2592x1944
+
+    // RK_U32 u32MX335Width = 2560;
+    // RK_U32 u32MX335Height = 1440;
+
+    RK_U32 u32MonitorWitdh = 1920; // 1440;
+    RK_U32 u32MonitorHeight = 1080;
 
     // GC2053 只能用 1920*1080
     // RK_U32 u32VC1Width = 1920;
     // RK_U32 u32VC1Height = 1080;
 
-    // imx415 可以使用 1280*720
+    // 335 使用1280x720
+    RK_U32 u32RknnWidthInput = 1280;
+    RK_U32 u32RknnHeightInput = 960;
+
     RK_U32 u32RknnWidth = 640;  // RTSP_INPUT_VI_WIDTH;
     RK_U32 u32RknnHeight = 360; // RTSP_INPUT_VI_HEIGHT;
 
@@ -159,14 +175,15 @@ int main(void)
     RK_MPI_SYS_Init();
 
     // 分别为rknn跟monitor创建vi通道，通道号分别为0跟1
-    ret = create_vi(s32CamId, u32Width, u32Height, "rkispp_scale0", DRAW_RESULT_BOX_CHN_INDEX);
+    // ret = create_vi(s32CamId, u32Width, u32Height, "rkispp_scale0", DRAW_RESULT_BOX_CHN_INDEX);
+    ret = create_vi(s32CamId, u32MX335Width, u32MX335Height, "rkispp_scale0", DRAW_RESULT_BOX_CHN_INDEX);
     if (ret < 0)
     {
         printf("create_vi %d failed\n", DRAW_RESULT_BOX_CHN_INDEX);
         return -1;
     }
 
-    ret = create_vi(s32CamId, u32RknnWidth, u32RknnHeight, "rkispp_scale1", RK_NN_RGA_CHN_INDEX);
+    ret = create_vi(s32CamId, u32RknnWidthInput, u32RknnHeightInput, "rkispp_scale1", RK_NN_RGA_CHN_INDEX);
     if (ret < 0)
     {
         printf("create_vi %d cb\n", RK_NN_RGA_CHN_INDEX);
@@ -174,7 +191,7 @@ int main(void)
     }
 
     // 创建rga通道，通道号为0
-    ret = create_rga(MONITOR_RGA_CHN, u32Width, u32Height);
+    ret = create_rga(MONITOR_RGA_CHN, u32MX335Width, u32MX335Height, u32MonitorWitdh, u32MonitorHeight);
     if (ret < 0)
     {
         printf("create_rga_rknn failed ret:%d\n", ret);
@@ -190,7 +207,7 @@ int main(void)
     }
 
     // 创建rga通道，通道号为1
-    ret = create_rga(RKNN_RGA_CHN, u32RknnWidth, u32RknnHeight);
+    ret = create_rga(RKNN_RGA_CHN, u32RknnWidthInput, u32RknnHeightInput, u32RknnWidth, u32RknnHeight);
     if (ret < 0)
     {
         printf("create_rga_rknn failed ret:%d\n", ret);
@@ -220,7 +237,7 @@ int main(void)
     }
 
     // 创建venc通道，通道号为0
-    ret = create_venc_chn(VIDEO_FPS, u32Width, u32Height, 0);
+    ret = create_venc_chn(VIDEO_FPS, u32MonitorWitdh, u32MonitorHeight, 0);
     if (ret < 0)
     {
         printf("ERROR: create_venc_chn error%d\n", 0);

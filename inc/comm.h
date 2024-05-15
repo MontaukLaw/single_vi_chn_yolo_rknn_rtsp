@@ -69,7 +69,8 @@ extern "C"
 
     void unbind_vi_rga(RK_S32 cameraId, RK_U32 viChnId, RK_U32 rgaChnId);
 
-    int create_rga(RK_S32 rgaChn, RK_U32 u32Width, RK_U32 u32Height);
+    // int create_rga(RK_S32 rgaChn, RK_U32 u32Width, RK_U32 u32Height);
+    int create_rga(RK_S32 rgaChn, RK_U32 u32WidthInput, RK_U32 u32HeightInput, RK_U32 u32WidthOutput, RK_U32 u32HeightOutput);
 
     int create_vi(RK_S32 s32CamId, RK_U32 u32Width, RK_U32 u32Height, const RK_CHAR *pVideoNode, RK_S32 viChn);
 

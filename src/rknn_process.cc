@@ -92,7 +92,6 @@ void *rknn_yolo_thread(void *args)
 
         detect(modeInputData, &detect_result_group_);
         // int pResult = predict(modeInputData, &detect_result_group_);
-
         // printf("dd= %d,sizeN=%d\n", outMindist.size(), sizeN);
 
         if (detect_result_group_.count > 0)

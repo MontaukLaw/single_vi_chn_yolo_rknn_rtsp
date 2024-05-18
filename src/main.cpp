@@ -95,7 +95,7 @@ static int create_venc_chn(RK_U32 fps, RK_U32 u32Width, RK_U32 u32Height, RK_U32
     venc_chn_attr.stVencAttr.enType = RK_CODEC_TYPE_H264;
     venc_chn_attr.stRcAttr.enRcMode = VENC_RC_MODE_H264CBR;
     venc_chn_attr.stRcAttr.stH264Cbr.u32Gop = fps;
-    venc_chn_attr.stRcAttr.stH264Cbr.u32BitRate = u32Width * u32Height * 3;
+    venc_chn_attr.stRcAttr.stH264Cbr.u32BitRate = u32Width * u32Height * 2; // u32Width * u32Height * 3;
 
     // frame rate: in 30/1, out 30/1.
     venc_chn_attr.stRcAttr.stH264Cbr.fr32DstFrameRateDen = 1;

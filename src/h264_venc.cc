@@ -69,19 +69,82 @@ void init_rtsp()
 #endif
 }
 
+void write_to_file(uint8_t *data, int len)
+{
+    static FILE *fp = NULL;
+    if (fp == NULL)
+    {
+        fp = fopen("sample.h264", "wb");
+    }
+    fwrite(data, 1, len, fp);
+}
+
+static int if_init = 0;
 // 用于监控的编码的回调
 // real thing
-void monitor_venc_packet_cb(MEDIA_BUFFER mb)
+void monitor_venc_packet_cb_rtsp(MEDIA_BUFFER mb)
 {
-
-    static RK_S32 packet_cnt = 0;
-    // printf("#Get packet-%d, size %zu\n", packet_cnt, RK_MPI_MB_GetSize(mb));
     if (g_rtsplive && g_rtsp_session_c0)
     {
-
         rtsp_tx_video(g_rtsp_session_c0, (const uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), RK_MPI_MB_GetTimestamp(mb));
         rtsp_do_event(g_rtsplive);
     }
+
+    RK_MPI_MB_ReleaseBuffer(mb);
+}
+void monitor_venc_packet_cb(MEDIA_BUFFER mb)
+{
+    static int64_t last_time = 0;
+    static int64_t frame_counter = 1;
+    static RK_S32 packet_cnt = 0;
+    static int64_t gime_gap_total = 0;
+    printf("# Get packet-%d, size %zu\n", packet_cnt, RK_MPI_MB_GetSize(mb));
+    if (frame_counter == 1)
+    {
+        last_time = av_gettime();
+    }
+    int64_t time_gap_ms = (av_gettime() - last_time) / 1000;
+    printf("time gap:%lld\n", time_gap_ms);
+    gime_gap_total = time_gap_ms + gime_gap_total;
+    printf("gap total:%lld\n", gime_gap_total);
+    printf("gap average:%lld\n", gime_gap_total / frame_counter);
+    last_time = av_gettime();
+    RK_MPI_MB_ReleaseBuffer(mb);
+    frame_counter++;
+    return;
+    if (g_rtsplive && g_rtsp_session_c0)
+    {
+        // rtsp_tx_video(g_rtsp_session_c0, (const uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), RK_MPI_MB_GetTimestamp(mb));
+        // rtsp_do_event(g_rtsplive);
+    }
+    // if (if_init < 30)
+    // {
+    //     int i = 0;
+    //     for (i = 0; i < 10; i++)
+    //     {
+    //         // printf("0x%02x ", ((uint8_t *)RK_MPI_MB_GetPtr(mb))[i]);
+    //     }
+
+    //     // printf("\n");
+    //     if_init++;
+    // }
+    if (if_init == 0)
+    {
+        init_rtmp_connection();
+        set_start_time();
+        send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+
+        if_init++;
+    }
+    else
+    {
+        send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+        // write_to_file((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+    }
+
+    // write_to_file((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+
+    // send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
 
     // 计算一下帧率
     // static int64_t last_time = 0;

@@ -15,6 +15,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <stdint.h>
+#include "simple_rtmp_pusher.h"
 
 // #include "CImg/CImg.h"
 

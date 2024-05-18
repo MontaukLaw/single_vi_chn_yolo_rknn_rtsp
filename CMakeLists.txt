@@ -15,8 +15,7 @@ set(X11_LIB_INC /usr/include)
 message("x11: ${X11_LIB_INC}")
 
 set(MP4_LIBS mp4v2)
-link_directories(include lib)
-
+link_directories(include lib /home/marc/atk_rv_sdk/buildroot/output/alientek_rv1126/build/ffmpeg-4.1.3/libavutil/)
 
 add_definitions(-g -O0 -ggdb -gdwarf -funwind-tables -rdynamic)
 add_definitions(-Wno-write-strings -Wno-return-type)
@@ -55,6 +54,7 @@ add_definitions(-DRKAIQ)
 
 add_executable(single_vi_yolo_rknn_rtsp 
         src/main.cpp
+        src/simple_rtmp_pusher.cpp
         src/comm.cc
         src/rknn_funcs.cpp
         # src/rknn_model.cc
@@ -71,7 +71,10 @@ add_executable(single_vi_yolo_rknn_rtsp
 
 target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} 
                         pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga testPYSo
-                        yolo_detect)
+                        yolo_detect  avformat avutil avcodec)
+
+add_executable(h264_reader src/h264_reader.cpp) 
+target_link_libraries(h264_reader ${OPENCV_LIBS} avformat avutil avcodec)
 
 # add_executable(prediect_demo src/predict_demo_src/predict_demo.cc 
 #                              src/rknn_model.cc 

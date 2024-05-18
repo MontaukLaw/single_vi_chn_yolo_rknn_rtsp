@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include "monitor.h"
-
+#include "simple_rtmp_pusher.h"
 g_params gParams;
 
 std::map<std::string, std::string> readConfig(const std::string &filename)
@@ -44,6 +44,7 @@ std::map<std::string, std::string> readConfig(const std::string &filename)
     gParams.water_mark_y_gap = std::stoi(config["water_mark_y_gap"]);
     gParams.clean_old_box_frames = std::stoi(config["clean_old_box_frames"]);
     gParams.model_name = config["model_name"];
+    gParams.rtmp_addr = config["rtmp_addr"];
 
     int i = 0;
     for (i = 0; i < WATER_MARK_TEXT_LINES; i++)

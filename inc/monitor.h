@@ -37,6 +37,7 @@ extern "C"
         int jpeg_interval;
         int water_mark_y_gap;
         std::string model_name;
+        std::string rtmp_addr;
 
         water_mark ws_water_mark[WATER_MARK_TEXT_LINES];
         water_mark es_water_mark[WATER_MARK_TEXT_LINES];

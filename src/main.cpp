@@ -124,7 +124,7 @@ int main(void)
     int ret = 0;
 
     readConfig("config.ini");
-
+    
     RK_U32 u32Width = 1920;
     RK_U32 u32Height = 1080;
 

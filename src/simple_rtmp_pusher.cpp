@@ -1,5 +1,6 @@
 #include "simple_rtmp_pusher.h"
 #include "user_define.h"
+#include <monitor.h>
 
 static AVFormatContext *ifmt_ctx = NULL;
 static AVFormatContext *ofmt_ctx = NULL;
@@ -10,6 +11,8 @@ static AVStream *in_stream, *out_stream;
 
 static AVPacket pkt;
 static int first_pack = 0;
+const char *rtmp_stream_addr;
+extern g_params gParams;
 
 void destropy_ctx(void)
 {
@@ -26,18 +29,20 @@ void init_rtmp_connection(void)
 {
 
     // AVPacket pkt;
-    const char *in_filename, *out_filename;
+    const char *in_filename; // , *out_filename;
     int ret, i;
     int videoindex = -1;
 
     // in_filename = "test10.h264";
     in_filename = "sample.h264";
-    out_filename = "rtmp://43.139.145.196/live/livestream?secret=e8c13b9687ec47f989d80f08b763fdbf";
+    rtmp_stream_addr = gParams.rtmp_addr.c_str();
+    // out_filename = "rtmp://43.139.145.196/live/livestream?secret=e8c13b9687ec47f989d80f08b763fdbf";
+    // out_filename = "rtmp://push.zhijingwuxian.com/bejing/1?auth_key=1715833043-0-0-c3b7c2b6914aa9f7ff20fc70ff2d3709";
     // printf("%s\n", in_filename);
 
     av_register_all();
 
-    printf(">> %s\n", out_filename);
+    printf(">> %s\n", rtmp_stream_addr);
     // Network
     avformat_network_init();
 
@@ -80,7 +85,7 @@ void init_rtmp_connection(void)
     printf("dump data\n");
 
     // Output
-    avformat_alloc_output_context2(&ofmt_ctx, NULL, "flv", out_filename); // RTMP
+    avformat_alloc_output_context2(&ofmt_ctx, NULL, "flv", rtmp_stream_addr); // RTMP
     // avformat_alloc_output_context2(&ofmt_ctx, NULL, "mpegts", out_filename);//UDP
 
     if (!ofmt_ctx)
@@ -119,14 +124,14 @@ void init_rtmp_connection(void)
             out_stream->codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER; // CODEC_FLAG_GLOBAL_HEADER;
     }
     // Dump Format------------------
-    av_dump_format(ofmt_ctx, 0, out_filename, 1);
+    av_dump_format(ofmt_ctx, 0, rtmp_stream_addr, 1);
     // Open output URL
     if (!(ofmt->flags & AVFMT_NOFILE))
     {
-        ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
+        ret = avio_open(&ofmt_ctx->pb, rtmp_stream_addr, AVIO_FLAG_WRITE);
         if (ret < 0)
         {
-            printf("Could not open output URL '%s'", out_filename);
+            printf("Could not open output URL '%s'", rtmp_stream_addr);
             destropy_ctx();
             return;
         }

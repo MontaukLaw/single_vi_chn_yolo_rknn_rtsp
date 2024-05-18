@@ -61,7 +61,7 @@ add_executable(single_vi_yolo_rknn_rtsp
         src/sample_common_isp.c
         src/yolo.cc
         src/monitor.cc
-        src/param.cc
+        src/param.cpp
         src/mp4_process.cc
         src/utils.cc
         src/h264_venc.cc
@@ -71,7 +71,7 @@ add_executable(single_vi_yolo_rknn_rtsp
 
 target_link_libraries(single_vi_yolo_rknn_rtsp ${OPENCV_LIBS} ${RKNN_LIBS} 
                         pthread dl ${RTSP_LIBS} ${MP4_LIBS} rga testPYSo
-                        yolo_detect  avformat avutil avcodec)
+                        yolo_detect avformat avutil avcodec)
 
 add_executable(h264_reader src/h264_reader.cpp) 
 target_link_libraries(h264_reader ${OPENCV_LIBS} avformat avutil avcodec)

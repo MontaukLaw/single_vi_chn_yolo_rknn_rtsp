@@ -20,4 +20,6 @@ void send_to_rtmp_server_testing(uint8_t *h264_data, int data_len, int64_t time_
 
 void set_start_time(void);
 
+void set_rtmp_addr(char *addr);
+
 #endif

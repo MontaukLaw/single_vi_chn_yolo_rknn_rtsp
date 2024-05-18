@@ -6,6 +6,10 @@ static AVFormatContext *ofmt_ctx = NULL;
 static AVOutputFormat *ofmt = NULL;
 static int64_t start_time = 0;
 static int64_t frame_index = 0;
+static AVStream *in_stream, *out_stream;
+
+static AVPacket pkt;
+static int first_pack = 0;
 
 void destropy_ctx(void)
 {
@@ -73,9 +77,6 @@ void init_rtmp_connection(void)
             break;
         }
 
-    // Stream #0:0: Video: h264 (High), yuv420p(progressive), 1920x1080, 30 fps, 30 tbr, 1200k tbn, 60 tbc
-    av_dump_format(ifmt_ctx, 0, in_filename, 0);
-
     printf("dump data\n");
 
     // Output
@@ -133,6 +134,26 @@ void init_rtmp_connection(void)
 
     printf("send head\n");
 
+    if (first_pack == 0)
+    {
+        ret = av_read_frame(ifmt_ctx, &pkt);
+        first_pack = 1;
+        if (ret < 0)
+        {
+            printf("av_read_frame failed\n");
+            return;
+        }
+    }
+
+    ifmt_ctx->streams[0]->time_base.num = 1;
+    ifmt_ctx->streams[0]->time_base.den = 1000000;
+
+    in_stream = ifmt_ctx->streams[pkt.stream_index];
+    out_stream = ofmt_ctx->streams[pkt.stream_index];
+
+    // Stream #0:0: Video: h264 (High), yuv420p(progressive), 1920x1080, 30 fps, 30 tbr, 1200k tbn, 60 tbc
+    av_dump_format(ifmt_ctx, 0, in_filename, 0);
+
     // Write file header
     ret = avformat_write_header(ofmt_ctx, NULL);
     if (ret < 0)
@@ -142,6 +163,7 @@ void init_rtmp_connection(void)
         return;
     }
     printf("head sent \n");
+
     // printf("start_time %ld\n", start_time);
 }
 
@@ -150,9 +172,44 @@ void set_start_time(void)
     start_time = av_gettime();
 }
 
-static AVPacket pkt;
-static int first_pack = 0;
-void send_to_rtmp_server(uint8_t *h264_data, int data_len)
+void send_to_rtmp_server_testing(uint8_t *h264_data, int data_len, int64_t time_stamp)
+{
+    int ret = 0;
+
+    // Get an AVPacket
+    pkt.data = h264_data;
+    pkt.size = data_len;
+
+    // 重新给ifmt_ctx->streams[0]->time_base赋值
+    // time_base: num: 1 len: 1000000
+    // ifmt_ctx->streams[0]->time_base.num = 1;
+    // ifmt_ctx->streams[0]->time_base.den = 1000000;
+
+    // 由fps决定的, 40ms一帧, 由于现在的时基是毫秒，所以是40
+    // int64_t calc_duration = 40;
+
+    // pts是累计的帧数*帧间隔
+    // pts以ｕｓ为单位
+    pkt.pts = time_stamp / 1000; // (double)(frame_index * calc_duration);
+    pkt.dts = pkt.pts;
+    pkt.duration = 40;
+    pkt.pos = -1;
+    // 每个pts隔间是40000
+    printf("pkt.pts:%lld\n", pkt.pts);
+    // printf("pkt.pts:%lld duration:%lld\n", pkt.pts, pkt.duration);
+
+    frame_index++;
+
+    ret = av_interleaved_write_frame(ofmt_ctx, &pkt);
+    if (ret < 0)
+    {
+        printf("Error muxing packet\n");
+        return;
+    }
+
+    av_free_packet(&pkt);
+}
+void send_to_rtmp_server_testedd(uint8_t *h264_data, int data_len)
 {
     int ret = 0;
     AVStream *in_stream, *out_stream;
@@ -211,6 +268,10 @@ void send_to_rtmp_server(uint8_t *h264_data, int data_len)
     pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
     pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
     pkt.pos = -1;
+    printf(">> pkt.pts:%lld\n", pkt.pts);
+    printf(">> pkt.dts:%lld\n", pkt.dts);
+    printf(">> pkt.duration:%lld\n", pkt.duration);
+    printf(">> pkt.pos:%lld\n", pkt.pos);
     // Print to Screen
     printf("Send %8d video frames to output URL\n", frame_index);
     frame_index++;

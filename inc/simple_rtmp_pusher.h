@@ -16,6 +16,8 @@ void init_rtmp_connection(void);
 
 void send_to_rtmp_server(uint8_t *h264_data, int data_len);
 
+void send_to_rtmp_server_testing(uint8_t *h264_data, int data_len, int64_t time_stamp);
+
 void set_start_time(void);
 
 #endif

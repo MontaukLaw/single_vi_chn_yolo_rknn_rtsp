@@ -92,26 +92,27 @@ void monitor_venc_packet_cb_rtsp(MEDIA_BUFFER mb)
 
     RK_MPI_MB_ReleaseBuffer(mb);
 }
+
+static int64_t start_time = 0;
 void monitor_venc_packet_cb(MEDIA_BUFFER mb)
 {
-    static int64_t last_time = 0;
-    static int64_t frame_counter = 1;
-    static RK_S32 packet_cnt = 0;
-    static int64_t gime_gap_total = 0;
-    printf("# Get packet-%d, size %zu\n", packet_cnt, RK_MPI_MB_GetSize(mb));
-    if (frame_counter == 1)
-    {
-        last_time = av_gettime();
-    }
-    int64_t time_gap_ms = (av_gettime() - last_time) / 1000;
-    printf("time gap:%lld\n", time_gap_ms);
-    gime_gap_total = time_gap_ms + gime_gap_total;
-    printf("gap total:%lld\n", gime_gap_total);
-    printf("gap average:%lld\n", gime_gap_total / frame_counter);
-    last_time = av_gettime();
-    RK_MPI_MB_ReleaseBuffer(mb);
-    frame_counter++;
-    return;
+    // static int64_t last_time = 0;
+    // static int64_t frame_counter = 1;
+    // static RK_S32 packet_cnt = 0;
+    // static int64_t gime_gap_total = 0;
+    // printf("# Get packet-%d, size %zu\n", packet_cnt, RK_MPI_MB_GetSize(mb));
+    // if (frame_counter == 1)
+    // {
+    //     last_time = av_gettime();
+    // }
+    // int64_t time_gap_ms = (av_gettime() - last_time) / 1000;
+    // printf("time gap:%lld\n", time_gap_ms);
+    // gime_gap_total = time_gap_ms + gime_gap_total;
+    // printf("gap total:%lld\n", gime_gap_total);
+    // printf("gap average:%lld\n", gime_gap_total / frame_counter);
+    // last_time = av_gettime();
+    // RK_MPI_MB_ReleaseBuffer(mb);
+    // frame_counter++;
     if (g_rtsplive && g_rtsp_session_c0)
     {
         // rtsp_tx_video(g_rtsp_session_c0, (const uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), RK_MPI_MB_GetTimestamp(mb));
@@ -132,15 +133,19 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     {
         init_rtmp_connection();
         set_start_time();
-        send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+        send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), 0);
+        // send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
 
+        start_time = RK_MPI_MB_GetTimestamp(mb);
         if_init++;
     }
     else
     {
-        send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+        // send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
+        send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), (RK_MPI_MB_GetTimestamp(mb) - start_time));
         // write_to_file((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
     }
+    // printf("timestamp:%lld\n", RK_MPI_MB_GetTimestamp(mb));
 
     // write_to_file((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
 
@@ -158,7 +163,7 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     // pthread_mutex_unlock(&mp4_mutex);
 
     RK_MPI_MB_ReleaseBuffer(mb);
-    packet_cnt++;
+    // packet_cnt++;
 }
 
 // wasted

@@ -97,6 +97,7 @@ void rtp_obs(MEDIA_BUFFER mb)
 {
     int mb_size = RK_MPI_MB_GetSize(mb);
     uint8_t *pData = (uint8_t *)malloc(mb_size);
+    uint8_t *pRtp = nullptr;
     if (pData == nullptr)
     {
         printf("Alloc failde\n");
@@ -109,8 +110,8 @@ void rtp_obs(MEDIA_BUFFER mb)
     if (0x67 == pData[4] && if_first_sps == false)
     {
         // 去掉第一个包中的sps跟pps
-        pData = pData + 0x26;
-        feed_rtp(pData, mb_size);
+        pRtp = pData + 0x26;
+        feed_rtp(pRtp, mb_size - 0x26);
         if_first_sps = true;
     }
     else if (frame_counter < 70)

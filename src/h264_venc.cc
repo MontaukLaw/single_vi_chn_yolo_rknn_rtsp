@@ -93,6 +93,34 @@ void monitor_venc_packet_cb_rtsp(MEDIA_BUFFER mb)
     RK_MPI_MB_ReleaseBuffer(mb);
 }
 
+void rtp_obs(MEDIA_BUFFER mb)
+{
+    int mb_size = RK_MPI_MB_GetSize(mb);
+    uint8_t *pData = (uint8_t *)malloc(mb_size);
+    if (pData == nullptr)
+    {
+        printf("Alloc failde\n");
+        return;
+    }
+    memcpy(pData, (uint8_t *)RK_MPI_MB_GetPtr(mb), mb_size);
+
+    static bool if_first_sps = false;
+    static int frame_counter = 0;
+    if (0x67 == pData[4] && if_first_sps == false)
+    {
+        // 去掉第一个包中的sps跟pps
+        pData = pData + 0x26;
+        feed_rtp(pData, mb_size);
+        if_first_sps = true;
+    }
+    else if (frame_counter < 70)
+    {
+        feed_rtp(pData, mb_size);
+    }
+
+    free(pData);
+}
+
 static int64_t start_time = 0;
 void monitor_venc_packet_cb(MEDIA_BUFFER mb)
 {
@@ -115,20 +143,15 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     // frame_counter++;
     if (g_rtsplive && g_rtsp_session_c0)
     {
+        // rtsp部分
         // rtsp_tx_video(g_rtsp_session_c0, (const uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), RK_MPI_MB_GetTimestamp(mb));
         // rtsp_do_event(g_rtsplive);
     }
-    // if (if_init < 30)
-    // {
-    //     int i = 0;
-    //     for (i = 0; i < 10; i++)
-    //     {
-    //         // printf("0x%02x ", ((uint8_t *)RK_MPI_MB_GetPtr(mb))[i]);
-    //     }
 
-    //     // printf("\n");
-    //     if_init++;
-    // }
+    // rtp 部分
+    rtp_obs(mb);
+
+    // rtmp部分
     if (if_init == 0)
     {
         init_rtmp_connection();

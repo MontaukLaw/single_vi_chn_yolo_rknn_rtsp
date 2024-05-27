@@ -124,7 +124,7 @@ int main(void)
     int ret = 0;
 
     readConfig("config.ini");
-    
+
     RK_U32 u32Width = 1920;
     RK_U32 u32Height = 1080;
 
@@ -153,7 +153,10 @@ int main(void)
     init_isp();
 
     // 初始化rtsp
-    init_rtsp();
+    // init_rtsp();
+
+    // 20240527 重新加入rtp
+    init_rtp();
 
     // 系统初始化
     RK_MPI_SYS_Init();

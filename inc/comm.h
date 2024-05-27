@@ -17,6 +17,7 @@
 #include <stdint.h>
 #include "simple_rtmp_pusher.h"
 
+
 // #include "CImg/CImg.h"
 
 #ifdef __cplusplus
@@ -44,6 +45,7 @@ extern "C"
 #include "h264_venc.h"
 #include "tran.h"
 #include "yolo_detect.h"
+#include "rtp_server.h"
 
     void common_vi_setup(struct Session *session, VI_CHN_WORK_MODE mode, RK_S32 vi_pipe);
 

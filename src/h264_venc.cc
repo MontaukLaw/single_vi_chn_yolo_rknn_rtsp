@@ -95,6 +95,8 @@ void monitor_venc_packet_cb_rtsp(MEDIA_BUFFER mb)
 
 void rtp_obs(MEDIA_BUFFER mb)
 {
+
+    static int iframe_counter = 0;
     int mb_size = RK_MPI_MB_GetSize(mb);
     uint8_t *pData = (uint8_t *)malloc(mb_size);
     uint8_t *pRtp = nullptr;
@@ -105,19 +107,54 @@ void rtp_obs(MEDIA_BUFFER mb)
     }
     memcpy(pData, (uint8_t *)RK_MPI_MB_GetPtr(mb), mb_size);
 
-    static bool if_first_sps = false;
-    static int frame_counter = 0;
-    if (0x67 == pData[4] && if_first_sps == false)
+    switch (iframe_counter)
     {
-        // 去掉第一个包中的sps跟pps
-        pRtp = pData + 0x26;
-        feed_rtp(pRtp, mb_size - 0x26);
-        if_first_sps = true;
-    }
-    else if (frame_counter < 70)
-    {
+        // 抛弃第一个包, 以及后面的若干帧
+    case 0:
+        if (0x67 == pData[4])
+        {
+            printf("first iframe\n");
+            iframe_counter++;
+        }
+        break;
+
+    case 1:
+        if (0x67 == pData[4])
+        {
+            printf("second iframe\n");
+            // 去掉第2个包中的sps跟pps
+            pRtp = pData + 0x26;
+            feed_rtp(pRtp, mb_size - 0x26);
+            // if_first_sps = true;
+            iframe_counter++;
+        }
+        break;
+    case 2:
+        printf("normal frame\n");
+        // 后面的就正常执行
         feed_rtp(pData, mb_size);
+        break;
     }
+
+    // if (0x67 == pData[4])
+    // {
+    //     if (iframe_counter < 2)
+    //     {
+    //         iframe_counter++;
+    //     }
+    //     if (iframe_counter == 2)
+    //     {
+    //         // 去掉第2个包中的sps跟pps
+    //         pRtp = pData + 0x26;
+    //         feed_rtp(pRtp, mb_size - 0x26);
+    //         // if_first_sps = true;
+    //         iframe_counter++;
+    //     }
+    // }
+    // else if (iframe_counter == 3)
+    // {
+    //     feed_rtp(pData, mb_size);
+    // }
 
     free(pData);
 }
@@ -155,9 +192,9 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     // rtmp部分
     if (if_init == 0)
     {
-        init_rtmp_connection();
-        set_start_time();
-        send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), 0);
+        // init_rtmp_connection();
+        // set_start_time();
+        // send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), 0);
         // send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
 
         start_time = RK_MPI_MB_GetTimestamp(mb);
@@ -166,7 +203,7 @@ void monitor_venc_packet_cb(MEDIA_BUFFER mb)
     else
     {
         // send_to_rtmp_server((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
-        send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), (RK_MPI_MB_GetTimestamp(mb) - start_time));
+        // send_to_rtmp_server_testing((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb), (RK_MPI_MB_GetTimestamp(mb) - start_time));
         // write_to_file((uint8_t *)RK_MPI_MB_GetPtr(mb), RK_MPI_MB_GetSize(mb));
     }
     // printf("timestamp:%lld\n", RK_MPI_MB_GetTimestamp(mb));

@@ -1,5 +1,6 @@
 #include "monitor.h"
 #include "mp4_process.h"
+#include <opencv2/freetype.hpp>
 
 using namespace cv;
 
@@ -11,6 +12,8 @@ extern int boxInfoListNumber;
 extern int boxDisplayCounterDown;
 
 box_info_t boxInfoList[OBJ_NUMB_MAX_SIZE];
+
+// std::string chinese_class_names = {"没戴安全帽", "安全帽"};
 
 // 画虚线
 void drawDashedLine(cv::Mat &img, cv::Point pt1, cv::Point pt2,
@@ -29,6 +32,34 @@ void drawDashedLine(cv::Mat &img, cv::Point pt1, cv::Point pt2,
     }
 }
 
+// void draw_chinese_text(Mat image, int class_idx, Point org)
+void draw_chinese_text(Mat image, std::string text, Point org)
+{
+    // cv::Ptr<cv::freetype::FreeType2> ft2;
+    // ft2 = cv::freetype::createFreeType2();
+    // ft2->loadFontData("SimHei.ttf", 0);
+    // // 设置文本参数
+    // std::string text = "你好";                    // chinese_class_names[class_idx]; // "你好!";
+    // int fontHeight = 60;                          // 字体高度
+    // cv::Scalar fontColor = cv::Scalar(255, 0, 0); // 蓝色
+    // int thickness = 2;                            // 字体厚度
+    // int line_type = cv::LINE_AA;                  // 线类型
+
+    // ft2->putText(image, text, org, fontHeight, fontColor, thickness, line_type, true);
+
+    cv::Ptr<cv::freetype::FreeType2> ft2;
+    ft2 = cv::freetype::createFreeType2();
+    ft2->loadFontData(gParams.chinese_font_path, 0);
+    int fontHeight = gParams.water_mark_font_size; // 字体高度
+    cv::Scalar textColor(255, 0, 0);                 // 文本颜色（红色）
+
+    int i = 0;
+    // 设置文本属性
+    std::string waterMarkText = text; // "你好"; // 需要显示的中文文本
+
+    ft2->putText(image, waterMarkText, org, fontHeight, textColor, -1, cv::LINE_AA, true);
+}
+
 // 在图像上添加分类标签
 void draw_label_text(Mat img, std::string text, Point org)
 {
@@ -40,7 +71,9 @@ void draw_label_text(Mat img, std::string text, Point org)
 
     // 在图像上添加文本
     // putText(img, text, org, fontFace, fontScale, color, thickness, cv::LINE_AA);
-    putText(img, text, org, fontFace, fontScale, color, thickness, LINE_AA);
+    // putText(img, text, org, fontFace, fontScale, color, thickness, LINE_AA);
+
+    // draw_chinese_text(img, text, org);
 }
 
 // 计算两点的距离
@@ -412,7 +445,10 @@ void *observer_thread(void *arg)
                 // 画框上的文字距离框10个像素
                 char labelStr[100];
                 sprintf(labelStr, "%s: %d", detect_result_group.results[i].name, distance);
-                draw_label_text(orig_img, std::string(labelStr), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
+                draw_chinese_text(orig_img, std::string(labelStr), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
+
+                // draw_chinese_text(orig_img, detect_result_group.results[i].class_index, Point(boxInfoList[i].left, boxInfoList[i].top - 10));
+                // draw_label_text(orig_img, std::string(labelStr), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
                 // draw_text(orig_img, std::string str(detect_result_group.results[i].name), Point(boxInfoList[i].left, boxInfoList[i].top - 10));
                 // Point(boxInfoList[i].centerX, boxInfoList[i].centerY));
             }

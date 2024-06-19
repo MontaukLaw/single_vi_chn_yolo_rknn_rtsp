@@ -1,3 +1,7 @@
+0619
+将res下面的safe_hat_class.txt文件推到板子上, 替换掉原来的coco_80_lables_list.txt
+然后重新编译项目即可
+
 0217
 1. 修改了旧框被刷新的逻辑, 具体刷新的时间参考config.ini, 记得把新的config.ini复制到板子上
 clean_old_box_frames=25

@@ -4,7 +4,6 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/freetype.hpp"
 
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -51,6 +50,8 @@ extern "C"
     void monitor_rga_packet_cb(MEDIA_BUFFER mb);
 
     void *observer_thread(void *arg);
+
+    // void draw_chinese_text(Mat image, int class_idx, Point org);
 
 #ifdef __cplusplus
 }

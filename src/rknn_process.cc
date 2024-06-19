@@ -72,10 +72,12 @@ void *rknn_yolo_thread(void *args)
             print_mb_info(buffer);
         }
 
+        printf("printCounter:%d\n", printCounter);
+
         if (printCounter == 30)
         {
             printf("Saving buffer to file\n");
-            save_file("640x360.rgb", RK_MPI_MB_GetPtr(buffer), RK_MPI_MB_GetSize(buffer));
+            // save_file("640x360.rgb", RK_MPI_MB_GetPtr(buffer), RK_MPI_MB_GetSize(buffer));
         }
 
         // 开始detect
@@ -104,13 +106,13 @@ void *rknn_yolo_thread(void *args)
             for (int i = 0; i < detect_result_group_.count; i++)
             {
 
-                printf("results[%d].name:%s\n", i, detect_result_group_.results[i].name);
-                printf("results[%d].prop:%f\n", i, detect_result_group_.results[i].prop);
-                printf("results[%d].box.left:%d\n", i, detect_result_group_.results[i].box.left);
-                printf("results[%d].box.right:%d\n", i, detect_result_group_.results[i].box.right);
-                printf("results[%d].box.top:%d\n", i, detect_result_group_.results[i].box.top);
-                printf("results[%d].box.bottom:%d\n", i, detect_result_group_.results[i].box.bottom);
-                printf("results[%d].class_index:%d\n", i, detect_result_group_.results[i].class_index);
+                // printf("results[%d].name:%s\n", i, detect_result_group_.results[i].name);
+                // printf("results[%d].prop:%f\n", i, detect_result_group_.results[i].prop);
+                // printf("results[%d].box.left:%d\n", i, detect_result_group_.results[i].box.left);
+                // printf("results[%d].box.right:%d\n", i, detect_result_group_.results[i].box.right);
+                // printf("results[%d].box.top:%d\n", i, detect_result_group_.results[i].box.top);
+                // printf("results[%d].box.bottom:%d\n", i, detect_result_group_.results[i].box.bottom);
+                // printf("results[%d].class_index:%d\n", i, detect_result_group_.results[i].class_index);
 
                 // detect_result_group.results[i].class_index = detect_result_group_.results[i].class_index;
                 // detect_result_group.results[i].prop = detect_result_group_.results[i].prop;
